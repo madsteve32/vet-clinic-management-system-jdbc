@@ -64,13 +64,20 @@ public class Main {
 //        } catch (NonexistingEntityException | InvalidEntityDataException e) {
 //            System.out.println(e.getMessage());
 //        }
+//        try {
+//            adminService.deleteAdminById(1L);
+//        } catch (NonexistingEntityException e) {
+//            System.out.println(e.getMessage());
+//        }
+
+//        adminService.findAll().forEach(System.out::println);
         try {
-            adminService.deleteAdminById(1L);
+            Administrator admin =  adminService.getAdminById(2L);
+            System.out.println(admin);
+            System.out.println(adminService.count());
         } catch (NonexistingEntityException e) {
             System.out.println(e.getMessage());
         }
-
-//        adminService.findAll().forEach(System.out::println);
 
         closeConnection(connection);
     }

@@ -16,6 +16,8 @@ import java.util.List;
 @Slf4j
 public class AdminRepositoryJdbc implements AdministratorRepository {
     public static final String SELECT_ALL_ADMINS = "select * from `administrators`;";
+    public static final String SELECT_ADMIN_BY_ID = "SELECT * FROM administrators WHERE (id = ?);";
+    public static final String SELECT_COUNT_ADMINS = "SELECT COUNT(*) FROM `administrators`;";
     public static final String INSERT_NEW_ADMIN =
             "INSERT INTO `vet_clinic_management_system`.`administrators` (`first_name`, `last_name`, `email`, `tel_number`, `username`, `password`, `gender`, `role`) values (?, ?, ?, ?, ?, ?, ?, ?) ;";
     public static final String UPDATE_ADMIN =
@@ -31,7 +33,7 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
     @Override
     public Collection<Administrator> findAll() throws EntityPersistenceException {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_ADMINS)) {
-            ResultSet rs =statement.executeQuery();
+            ResultSet rs = statement.executeQuery();
             return toAdmins(rs);
         } catch (SQLException ex) {
             log.error("Error creating connection to DB", ex);
@@ -41,7 +43,24 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
 
     @Override
     public Administrator findById(Long id) throws NonexistingEntityException {
-        return null;
+        Administrator admin = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ADMIN_BY_ID)) {
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            admin = toAdmins(rs).get(0);
+        } catch (SQLException e) {
+            log.error("Error creating connection to DB", e);
+            try {
+                throw new EntityPersistenceException("Error executing SQL query: " + SELECT_ADMIN_BY_ID, e);
+            } catch (EntityPersistenceException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        if (admin != null) {
+            return admin;
+        } else {
+            throw new NonexistingEntityException("Admin with ID " + id + "cannot be found.");
+        }
     }
 
     @Override
@@ -70,7 +89,7 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
                     admin.setId(generatedKeys.getLong(1));
                     return admin;
                 } else {
-                    throw new EntityPersistenceException("Creating user failed, no ID obtained.");
+                    throw new EntityPersistenceException("Creating admin failed, no ID obtained.");
                 }
             }
         } catch (SQLException ex) {
@@ -148,6 +167,20 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
     }
 
     @Override
+    public long count() {
+        int rowCount = 0;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_COUNT_ADMINS)) {
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                rowCount = rs.getInt("COUNT(*)");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rowCount;
+    }
+
+    @Override
     public void addAll(Collection<Administrator> entities) {
 
     }
@@ -155,11 +188,6 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
     @Override
     public void clear() {
 
-    }
-
-    @Override
-    public long count() {
-        return 0;
     }
 
     @Override
