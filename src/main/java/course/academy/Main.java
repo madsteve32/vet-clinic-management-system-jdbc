@@ -58,14 +58,19 @@ public class Main {
 //        } catch (InvalidEntityDataException e) {
 //            System.out.println(e.getMessage());
 //        }
+//        try {
+//            adminService.updateAdmin(new Administrator(1L,"Steve", "Lyutov", "steven.@test.com", "0896885591",
+//                    "admin123", "Admin_123", MALE, ADMIN));
+//        } catch (NonexistingEntityException | InvalidEntityDataException e) {
+//            System.out.println(e.getMessage());
+//        }
         try {
-            adminService.updateAdmin(new Administrator(1L,"Steve", "Lyutov", "steven.@test.com", "0896885591",
-                    "admin123", "Admin_123", MALE, ADMIN));
-        } catch (NonexistingEntityException | InvalidEntityDataException e) {
+            adminService.deleteAdminById(1L);
+        } catch (NonexistingEntityException e) {
             System.out.println(e.getMessage());
         }
 
-        adminService.findAll().forEach(System.out::println);
+//        adminService.findAll().forEach(System.out::println);
 
         closeConnection(connection);
     }

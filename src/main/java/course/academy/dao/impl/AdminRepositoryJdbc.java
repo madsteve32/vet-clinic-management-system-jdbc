@@ -20,7 +20,7 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
             "INSERT INTO `vet_clinic_management_system`.`administrators` (`first_name`, `last_name`, `email`, `tel_number`, `username`, `password`, `gender`, `role`) values (?, ?, ?, ?, ?, ?, ?, ?) ;";
     public static final String UPDATE_ADMIN =
             "UPDATE `vet_clinic_management_system`.`administrators` SET `first_name` = ?, `last_name` = ?, `tel_number` = ?, `username` = ? WHERE (`id` = ?);";
-
+    public static final String DELETE_ADMIN = "DELETE from `administrators` WHERE (`id` = ?);";
 
     private Connection connection;
 
@@ -114,6 +114,40 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
     }
 
     @Override
+    public Administrator deleteById(Long id) throws NonexistingEntityException {
+        Administrator deletedAdmin = findById(id);
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_ADMIN)) {
+            statement.setLong(1, id);
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                try {
+                    throw new EntityPersistenceException("Updating admin failed, no rows affected.");
+                } catch (EntityPersistenceException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                try {
+                    throw new EntityPersistenceException("Error executing SQL query: " + DELETE_ADMIN, e);
+                } catch (EntityPersistenceException entityPersistenceException) {
+                    System.out.println(entityPersistenceException.getMessage());
+                }
+            }
+            log.error("Error creating connection to DB", ex);
+            try {
+                throw new EntityPersistenceException("Error executing SQL query: " + DELETE_ADMIN, ex);
+            } catch (EntityPersistenceException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return deletedAdmin;
+    }
+
+    @Override
     public void addAll(Collection<Administrator> entities) {
 
     }
@@ -121,11 +155,6 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
     @Override
     public void clear() {
 
-    }
-
-    @Override
-    public Administrator deleteById(Long id) throws NonexistingEntityException {
-        return null;
     }
 
     @Override
