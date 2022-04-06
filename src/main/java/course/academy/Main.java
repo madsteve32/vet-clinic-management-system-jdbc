@@ -1,14 +1,15 @@
 package course.academy;
 
-import course.academy.dao.AdministratorRepository;
-import course.academy.dao.impl.AdminRepositoryJdbc;
+import course.academy.controller.UserController;
+import course.academy.dao.*;
+import course.academy.dao.impl.*;
 import course.academy.entities.Administrator;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.InvalidEntityDataException;
 import course.academy.exception.NonexistingEntityException;
 import course.academy.jdbc.JdbcSimpleDemo;
-import course.academy.service.AdministratorService;
-import course.academy.service.impl.AdministratorServiceImpl;
+import course.academy.service.*;
+import course.academy.service.impl.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileInputStream;
@@ -50,33 +51,34 @@ public class Main {
 
         //1. Load DB driver
         Connection connection = createDbConnection(props);
+
         AdministratorRepository adminRepository = new AdminRepositoryJdbc(connection);
+        DoctorRepository doctorRepository = new DoctorRepositoryJdbc(connection);
+        ClientRepository clientRepository = new ClientRepositoryJdbc(connection);
+        PetRepository petRepository = new PetRepositoryJdbc(connection);
+        PetPassportRepository passportRepository = new PetPassportRepositoryImpl();
+        AppointmentRepository appointmentRepository = new AppointmentRepositoryImpl();
+        ExaminationRepository examinationRepository = new ExaminationRepositoryImpl();
+
         AdministratorService adminService = new AdministratorServiceImpl(adminRepository);
+        DoctorService doctorService = new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository);
+        ClientService clientService = new ClientServiceImpl(clientRepository, appointmentRepository, petRepository);
+        PetService petService = new PetServiceImpl(petRepository);
+        PetPassportService passportService = new PetPassportServiceImpl(passportRepository);
+        AppointmentService appointmentService = new AppointmentServiceImpl(appointmentRepository);
+        ExaminationService examinationService = new ExaminationServiceImpl(examinationRepository);
 //        try {
 //            adminService.addAdmin(new Administrator("Steven", "Lyutov", "steven@test.com", "0898887766",
 //                    "admin", "Admin_123", MALE, ADMIN));
 //        } catch (InvalidEntityDataException e) {
 //            System.out.println(e.getMessage());
 //        }
-//        try {
-//            adminService.updateAdmin(new Administrator(1L,"Steve", "Lyutov", "steven.@test.com", "0896885591",
-//                    "admin123", "Admin_123", MALE, ADMIN));
-//        } catch (NonexistingEntityException | InvalidEntityDataException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        try {
-//            adminService.deleteAdminById(1L);
-//        } catch (NonexistingEntityException e) {
-//            System.out.println(e.getMessage());
-//        }
 
-//        adminService.findAll().forEach(System.out::println);
+        UserController userController = new UserController(adminService, doctorService, clientService, petService, passportService, appointmentService, examinationService);
         try {
-            Administrator admin =  adminService.getAdminById(2L);
-            System.out.println(admin);
-            System.out.println(adminService.count());
-        } catch (NonexistingEntityException e) {
-            System.out.println(e.getMessage());
+            userController.login();
+        } catch (NonexistingEntityException | InvalidEntityDataException e) {
+            e.printStackTrace();
         }
 
         closeConnection(connection);

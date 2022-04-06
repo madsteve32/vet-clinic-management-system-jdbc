@@ -179,6 +179,24 @@ public class ClientRepositoryJdbc implements ClientRepository {
         return rowCount;
     }
 
+    public List<Client> toClients(ResultSet rs) throws SQLException {
+        List<Client> results = new ArrayList<>();
+        while (rs.next()) {
+            results.add(new Client(
+                    rs.getLong(1),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("email"),
+                    rs.getString("tel_number"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    Gender.valueOf(rs.getString("gender")),
+                    Role.valueOf(rs.getString("role"))
+            ));
+        }
+        return results;
+    }
+
     @Override
     public void load() {
 
@@ -197,23 +215,5 @@ public class ClientRepositoryJdbc implements ClientRepository {
     @Override
     public void clear() {
 
-    }
-
-    public List<Client> toClients(ResultSet rs) throws SQLException {
-        List<Client> results = new ArrayList<>();
-        while (rs.next()) {
-            results.add(new Client(
-                    rs.getLong(1),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getString("email"),
-                    rs.getString("tel_number"),
-                    rs.getString("username"),
-                    rs.getString("password"),
-                    Gender.valueOf(rs.getString("gender")),
-                    Role.valueOf(rs.getString("role"))
-            ));
-        }
-        return results;
     }
 }

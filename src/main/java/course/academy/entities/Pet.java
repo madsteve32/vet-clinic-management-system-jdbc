@@ -4,8 +4,7 @@ import course.academy.dao.Identifiable;
 
 import java.io.Serializable;
 
-public class Pet implements Identifiable<Long>, Serializable {
-    private static final long serialVersionUID = 1L;
+public class Pet implements Identifiable<Long> {
     private Long id;
     private String name;
     private String breed;
@@ -36,6 +35,14 @@ public class Pet implements Identifiable<Long>, Serializable {
         this.weight = weight;
         this.owner = owner;
         this.petPassport = petPassport;
+    }
+
+    public Pet(Long id, String name, String breed, int weight, Client owner) {
+        this.id = id;
+        this.name = name;
+        this.breed = breed;
+        this.weight = weight;
+        this.owner = owner;
     }
 
     @Override
