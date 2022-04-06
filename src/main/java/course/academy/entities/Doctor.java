@@ -18,6 +18,10 @@ public class Doctor extends User {
         super(firstName, lastName, email, telNumber, username, password, gender, role);
     }
 
+    public Doctor(Long id, String firstName, String lastName, String email, String telNumber, String username, String password, Gender gender, Role role) {
+        super(id, firstName, lastName, email, telNumber, username, password, gender, role);
+    }
+
     public Doctor(String firstName, String lastName, String email, String telNumber, String username, String password, Gender gender, List<Appointment> appointments) {
         super(firstName, lastName, email, telNumber, username, password, gender);
         this.appointments = appointments;

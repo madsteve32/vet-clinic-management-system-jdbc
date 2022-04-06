@@ -1,7 +1,6 @@
 package course.academy.dao.impl;
 
 import course.academy.dao.ClientRepository;
-import course.academy.entities.Administrator;
 import course.academy.entities.Client;
 import course.academy.entities.enums.Gender;
 import course.academy.entities.enums.Role;
@@ -17,13 +16,13 @@ import java.util.List;
 @Slf4j
 public class ClientRepositoryJdbc implements ClientRepository {
     public static final String SELECT_ALL_CLIENTS = "SELECT * FROM `clients`;";
-    public static final String SELECT_CLIENT_BY_ID = "SELECT * FROM `administrators` WHERE (id = ?);";
-    public static final String SELECT_COUNT_CLIENTS = "SELECT COUNT(*) FROM `administrators`;";
+    public static final String SELECT_CLIENT_BY_ID = "SELECT * FROM `clients` WHERE (id = ?);";
+    public static final String SELECT_COUNT_CLIENTS = "SELECT COUNT(*) FROM `clients`;";
     public static final String INSERT_NEW_CLIENT =
             "INSERT INTO `vet_clinic_management_system`.`clients` (`first_name`, `last_name`, `email`, `tel_number`, `username`, `password`, `gender`, `role`) values (?, ?, ?, ?, ?, ?, ?, ?) ;";
     public static final String UPDATE_CLIENT =
             "UPDATE `vet_clinic_management_system`.`clients` SET `first_name` = ?, `last_name` = ?, `tel_number` = ?, `username` = ? WHERE (`id` = ?);";
-    public static final String DELETE_CLIENT = "DELETE from `administrators` WHERE (`id` = ?);";
+    public static final String DELETE_CLIENT = "DELETE from `clients` WHERE (`id` = ?);";
 
     private Connection connection;
 
