@@ -2,7 +2,6 @@ package course.academy.dao.impl;
 
 import course.academy.dao.ClientRepository;
 import course.academy.dao.PetRepository;
-import course.academy.entities.Client;
 import course.academy.entities.Pet;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.NonexistingEntityException;
