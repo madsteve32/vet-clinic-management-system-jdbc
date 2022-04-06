@@ -41,13 +41,6 @@ public class AdminController {
 
     public void init() {
         Menu menu = new Menu("Admin Menu", List.of(
-                new Menu.Option("Load Users", () -> {
-                    System.out.println("Loading Users...");
-                    adminService.loadData();
-                    doctorService.loadData();
-                    clientService.loadData();
-                    return "Users loaded successfully.";
-                }),
                 new Menu.Option("Show all Users", () -> {
                     System.out.println("Administrators:");
                     adminService.findAll().forEach(System.out::println);
