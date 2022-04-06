@@ -19,6 +19,10 @@ public class Client extends User {
         super(firstName, lastName, email, telNumber, username, password, gender, role);
     }
 
+    public Client(Long id, String firstName, String lastName, String email, String telNumber, String username, String password, Gender gender, Role role) {
+        super(id, firstName, lastName, email, telNumber, username, password, gender, role);
+    }
+
     public Client(String firstName, String lastName, String email, String telNumber, String username, String password, Gender gender, Pet pet) {
         super(firstName, lastName, email, telNumber, username, password, gender);
         this.pet = pet;

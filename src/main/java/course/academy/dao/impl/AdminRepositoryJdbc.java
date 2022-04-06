@@ -141,7 +141,7 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
                 try {
-                    throw new EntityPersistenceException("Updating admin failed, no rows affected.");
+                    throw new EntityPersistenceException("Deleting admin failed, no rows affected.");
                 } catch (EntityPersistenceException e) {
                     System.out.println(e.getMessage());
                 }

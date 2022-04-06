@@ -8,8 +8,7 @@ import java.io.Serializable;
 
 import static course.academy.entities.enums.Role.CLIENT;
 
-public class User implements Identifiable<Long>, Serializable {
-    private static final long serialVersionUID = 1L;
+public class User implements Identifiable<Long> {
     private Long id;
     private String firstName;
     private String lastName;
