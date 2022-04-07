@@ -1,4 +1,4 @@
-package course.academy.utils;
+package course.academy.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

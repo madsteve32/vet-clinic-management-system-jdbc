@@ -3,6 +3,7 @@ package course.academy.dao.impl;
 import course.academy.dao.*;
 import course.academy.service.*;
 import course.academy.service.impl.*;
+import course.academy.util.AdminValidator;
 
 public class ServiceFactoryImpl implements ServiceFactory {
     private final AdministratorRepository adminRepository;
@@ -25,7 +26,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
 
     @Override
     public AdministratorService createAdminService() {
-        return new AdministratorServiceImpl(adminRepository);
+        return new AdministratorServiceImpl(adminRepository, new AdminValidator());
     }
 
     @Override

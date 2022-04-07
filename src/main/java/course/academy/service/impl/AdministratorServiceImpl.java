@@ -2,20 +2,22 @@ package course.academy.service.impl;
 
 import course.academy.dao.AdministratorRepository;
 import course.academy.entities.Administrator;
+import course.academy.exception.ConstraintViolationException;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.InvalidEntityDataException;
 import course.academy.exception.NonexistingEntityException;
 import course.academy.service.AdministratorService;
+import course.academy.util.AdminValidator;
 
 import java.util.Collection;
 
 public class AdministratorServiceImpl implements AdministratorService {
-    private final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private final String PASSWORD_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%_]).{8,20})";
     private final AdministratorRepository adminRepository;
+    private final AdminValidator adminValidator;
 
-    public AdministratorServiceImpl(AdministratorRepository adminRepository) {
+    public AdministratorServiceImpl(AdministratorRepository adminRepository, AdminValidator adminValidator) {
         this.adminRepository = adminRepository;
+        this.adminValidator = adminValidator;
     }
 
 
@@ -41,28 +43,11 @@ public class AdministratorServiceImpl implements AdministratorService {
 
     @Override
     public Administrator addAdmin(Administrator admin) throws InvalidEntityDataException, EntityPersistenceException {
-        int firstNameLength = admin.getFirstName().length();
-        if (firstNameLength < 2 || firstNameLength > 15) {
-            throw new InvalidEntityDataException("First name must be between 2 and 15 characters.");
-        }
-
-        int lastNameLength = admin.getLastName().length();
-        if (lastNameLength < 2 || lastNameLength > 15) {
-            throw new InvalidEntityDataException("Last name must be between 2 and 15 characters.");
-        }
-
-
-        if (!admin.getEmail().matches(EMAIL_REGEX)) {
-            throw new InvalidEntityDataException("Email must be valid.");
-        }
-
-        int usernameLength = admin.getUsername().length();
-        if (usernameLength < 2 || usernameLength > 15) {
-            throw new InvalidEntityDataException("Username must be between 2 and 15 characters.");
-        }
-
-        if (!admin.getPassword().matches(PASSWORD_REGEX)) {
-            throw new InvalidEntityDataException("Password must be  8 to 15 characters long, at least one digit, one capital letter, and one sign different than letter or digit");
+        try {
+            adminValidator.validate(admin);
+        } catch (ConstraintViolationException e) {
+            throw new InvalidEntityDataException(
+                    String.format("Error creating admin '%s'", admin.getUsername()), e);
         }
         Administrator newAdmin = adminRepository.create(admin);
         adminRepository.save();
@@ -71,27 +56,11 @@ public class AdministratorServiceImpl implements AdministratorService {
 
     @Override
     public Administrator updateAdmin(Administrator admin) throws NonexistingEntityException, InvalidEntityDataException, EntityPersistenceException {
-        int firstNameLength = admin.getFirstName().length();
-        if (firstNameLength < 2 || firstNameLength > 15) {
-            throw new InvalidEntityDataException("First name must be between 2 and 15 characters.");
-        }
-
-        int lastNameLength = admin.getLastName().length();
-        if (lastNameLength < 2 || lastNameLength > 15) {
-            throw new InvalidEntityDataException("Last name must be between 2 and 15 characters.");
-        }
-
-        if (!admin.getEmail().matches(EMAIL_REGEX)) {
-            throw new InvalidEntityDataException("Email must be valid.");
-        }
-
-        int usernameLength = admin.getUsername().length();
-        if (usernameLength < 2 || usernameLength > 15) {
-            throw new InvalidEntityDataException("Username must be between 2 and 15 characters.");
-        }
-
-        if (!admin.getPassword().matches(PASSWORD_REGEX)) {
-            throw new InvalidEntityDataException("Password must be  8 to 15 characters long, at least one digit, one capital letter, and one sign different than letter or digit");
+        try {
+            adminValidator.validate(admin);
+        } catch (ConstraintViolationException e) {
+            throw new InvalidEntityDataException(
+                    String.format("Error updating admin '%s'", admin.getUsername()), e);
         }
         Administrator updatedAdmin = adminRepository.update(admin);
         adminRepository.save();
