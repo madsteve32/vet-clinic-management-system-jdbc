@@ -98,24 +98,20 @@ public class ClientController {
                     long id = Long.parseLong(scanner.nextLine());
                     try {
                         Doctor chosenDoctor = doctorService.getDoctorById(id);
-                        if (chosenDoctor.getAppointments().size() < 10) {
-                            appointment.setChosenDoctor(chosenDoctor);
-                        } else {
-                            System.out.println("Sorry doctor appointments is full chose another doctor.");
-                            id = Long.parseLong(scanner.nextLine());
-                        }
+                        appointment.setChosenDoctorId(chosenDoctor.getId());
+//                        if (chosenDoctor.getAppointments() != null && chosenDoctor.getAppointments().size() < 10) {
+////                            appointment.setChosenDoctor(chosenDoctor);
+//                        } else {
+//                            System.out.println("Sorry doctor appointments is full chose another doctor.");
+//                            id = Long.parseLong(scanner.nextLine());
+//                        }
                     } catch (NonexistingEntityException e) {
                         System.out.println(e.getMessage());
                     }
+                    appointment.setClientId(loggedClient.getId());
                     Appointment newAppointment = appointmentService.addAppointment(appointment);
-                    loggedClient.getAppointments().add(newAppointment);
-                    try {
-                        clientService.updateClient(loggedClient);
-                    } catch (NonexistingEntityException e) {
-                        System.out.println(e.getMessage());
-                    }
-                    return String.format("Appointment with id= %s and Doctor name= %s was added successful;y.",
-                            newAppointment.getId(), newAppointment.getChosenDoctor().getFirstName());
+                    return String.format("Appointment with id= %s and Doctor id= %s was added successful;y.",
+                            newAppointment.getId(), newAppointment.getChosenDoctorId());
                 }),
                 new Menu.Option("View my appointments", () -> {
                     Collection<Appointment> appointments = appointmentService.findAll();
@@ -134,14 +130,14 @@ public class ClientController {
                 }),
                 new Menu.Option("Complete Examination", () -> {
                     System.out.println("Please choose appointment by ID");
-                    appointmentService.findAll().stream()
-                            .filter(a -> a.getExamination() != null)
-                            .forEach(System.out::println);
+//                    appointmentService.findAll().stream()
+//                            .filter(a -> a.getExamination() != null)
+//                            .forEach(System.out::println);
                     long id = Long.parseLong(scanner.nextLine());
                     try {
                         Appointment appointment = appointmentService.getAppointmentById(id);
-                        Examination examination = appointment.getExamination();
-                        examination.setStatus(COMPLETED);
+//                        Examination examination = appointment.getExamination();
+//                        examination.setStatus(COMPLETED);
                         appointment.setStatus(COMPLETED);
                     } catch (NonexistingEntityException e) {
                         System.out.println(e.getMessage());

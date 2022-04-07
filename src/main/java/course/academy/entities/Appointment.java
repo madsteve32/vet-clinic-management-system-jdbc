@@ -10,33 +10,35 @@ import java.time.format.DateTimeFormatter;
 
 import static course.academy.entities.enums.Status.WAITING;
 
-public class Appointment implements Identifiable<Long>, Serializable {
-    private static final long serialVersionUID = 1L;
+public class Appointment implements Identifiable<Long> {
     private Long id;
-    private Long clientId;
-    private Doctor chosenDoctor;
     private ExaminationType examinationType;
     private LocalDateTime chosenDateTime;
-    private Examination examination;
     private Status status = WAITING;
+    private Long chosenDoctorId;
+    private Long clientId;
+    private Long examinationId;
 
     public Appointment() {
     }
 
-    public Appointment(Long clientId, Doctor chosenDoctor, ExaminationType examinationType, LocalDateTime chosenDateTime) {
-        this.clientId = clientId;
-        this.chosenDoctor = chosenDoctor;
+    public Appointment(Long id, ExaminationType examinationType, LocalDateTime chosenDateTime, Status status, Long chosenDoctorId, Long clientId) {
+        this.id = id;
         this.examinationType = examinationType;
         this.chosenDateTime = chosenDateTime;
+        this.status = status;
+        this.chosenDoctorId = chosenDoctorId;
+        this.clientId = clientId;
     }
 
-    public Appointment(Long clientId, Doctor chosenDoctor, ExaminationType examinationType, LocalDateTime chosenDateTime, Examination examination, Status status) {
-        this.clientId = clientId;
-        this.chosenDoctor = chosenDoctor;
+    public Appointment(Long id, ExaminationType examinationType, LocalDateTime chosenDateTime, Status status, Long chosenDoctorId, Long clientId, Long examinationId) {
+        this.id = id;
         this.examinationType = examinationType;
         this.chosenDateTime = chosenDateTime;
-        this.examination = examination;
         this.status = status;
+        this.chosenDoctorId = chosenDoctorId;
+        this.clientId = clientId;
+        this.examinationId = examinationId;
     }
 
     @Override
@@ -57,14 +59,6 @@ public class Appointment implements Identifiable<Long>, Serializable {
         this.clientId = clientId;
     }
 
-    public Doctor getChosenDoctor() {
-        return chosenDoctor;
-    }
-
-    public void setChosenDoctor(Doctor chosenDoctor) {
-        this.chosenDoctor = chosenDoctor;
-    }
-
     public ExaminationType getExaminationType() {
         return examinationType;
     }
@@ -81,14 +75,6 @@ public class Appointment implements Identifiable<Long>, Serializable {
         this.chosenDateTime = chosenDateTime;
     }
 
-    public Examination getExamination() {
-        return examination;
-    }
-
-    public void setExamination(Examination examination) {
-        this.examination = examination;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -97,17 +83,33 @@ public class Appointment implements Identifiable<Long>, Serializable {
         this.status = status;
     }
 
+    public Long getChosenDoctorId() {
+        return chosenDoctorId;
+    }
+
+    public void setChosenDoctorId(Long chosenDoctorId) {
+        this.chosenDoctorId = chosenDoctorId;
+    }
+
+    public Long getExaminationId() {
+        return examinationId;
+    }
+
+    public void setExaminationId(Long examinationId) {
+        this.examinationId = examinationId;
+    }
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         final StringBuilder sb = new StringBuilder("Appointment ");
         sb.append("| id= ").append(id);
         sb.append(" | clientID= ").append(clientId);
-        sb.append(" | chosenDoctor= ").append(chosenDoctor.getFirstName());
+        sb.append(" | chosenDoctorId= ").append(chosenDoctorId);
         sb.append(" | examinationType= ").append(examinationType);
         sb.append(" | chosenDateTime= ").append(chosenDateTime.format(formatter));
-        sb.append(" | examination= ").append(examination);
-        sb.append(" | status= ").append(status.name()).append(" |");
+        sb.append(" | examinationId= ").append(examinationId);
+        sb.append(" | status= ").append(status.name());
         return sb.toString();
     }
 }

@@ -59,14 +59,14 @@ public class DoctorController {
                 }),
                 new Menu.Option("View my appointments", () -> {
                     appointmentService.findAll().stream()
-                            .filter(a -> a.getChosenDoctor().getUsername().equals(loggedDoctor.getUsername()))
+                            .filter(a -> a.getChosenDoctorId().equals(loggedDoctor.getId()))
                             .forEach(System.out::println);
                     return "This is your appointments.";
                 }),
                 new Menu.Option("Complete Appointment", () -> {
                     System.out.println("Appointments:");
                     appointmentService.findAll().stream()
-                            .filter(a -> a.getChosenDoctor().getUsername().equals(loggedDoctor.getUsername()))
+                            .filter(a -> a.getChosenDoctorId().equals(loggedDoctor.getId()))
                             .forEach(System.out::println);
                     System.out.println("Please choose appointment by 'ID':");
                     long id = Long.parseLong(scanner.nextLine());
@@ -92,7 +92,7 @@ public class DoctorController {
                             if (n == 1) {
                                 Examination examination = new NewExaminationDialog().input();
                                 Examination createdExamination = doctorService.createExamination(examination);
-                                appointment.setExamination(createdExamination);
+//                                appointment.setExamination(createdExamination);
                                 appointmentService.updateAppointment(appointment);
 
                                 return String.format("Examination ID= '%s' and name '%s' added successfully.",

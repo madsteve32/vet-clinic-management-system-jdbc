@@ -49,9 +49,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointment.getChosenDateTime().isBefore(LocalDateTime.now())) {
             throw new InvalidEntityDataException("Appointment chosen date and time cannot be in the past.");
         }
-        if (appointment.getChosenDoctor().getAppointments().size() == 10) {
-            throw new InvalidEntityDataException("Chosen doctor has no free appointments.");
-        }
         Appointment newAppointment = appointmentRepository.create(appointment);
         appointmentRepository.save();
         return newAppointment;

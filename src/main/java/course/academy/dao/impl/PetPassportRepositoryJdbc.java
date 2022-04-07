@@ -1,7 +1,6 @@
 package course.academy.dao.impl;
 
 import course.academy.dao.PetPassportRepository;
-import course.academy.entities.Pet;
 import course.academy.entities.PetPassport;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.NonexistingEntityException;
