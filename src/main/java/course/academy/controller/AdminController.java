@@ -127,7 +127,7 @@ public class AdminController {
                         updatedClient.setTelNumber(client.getTelNumber());
                         updatedClient.setUsername(client.getUsername());
                         try {
-                            clientService.updateClientByAdmin(client);
+                            clientService.updateClientByAdmin(updatedClient);
                             return String.format("Client with ID='%s' and username='%s' was updated successfully.",
                                     updatedClient.getId(), updatedClient.getUsername());
                         } catch (NonexistingEntityException e) {
