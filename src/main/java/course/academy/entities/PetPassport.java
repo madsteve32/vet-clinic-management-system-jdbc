@@ -5,13 +5,13 @@ import course.academy.dao.Identifiable;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class PetPassport implements Identifiable<Long>, Serializable {
-    private static final long serialVersionUID = 1L;
+public class PetPassport implements Identifiable<Long> {
     private Long id;
-    private Long petId;
     private LocalDate dewormingDate;
     private LocalDate vaccinationDate;
     private LocalDate examinationDate;
+    private Long petId;
+    private Long clientId;
 
     public PetPassport() {
     }
@@ -21,6 +21,15 @@ public class PetPassport implements Identifiable<Long>, Serializable {
         this.dewormingDate = dewormingDate;
         this.vaccinationDate = vaccinationDate;
         this.examinationDate = examinationDate;
+    }
+
+    public PetPassport(Long id, LocalDate dewormingDate, LocalDate vaccinationDate, LocalDate examinationDate, Long petId, Long clientId) {
+        this.id = id;
+        this.dewormingDate = dewormingDate;
+        this.vaccinationDate = vaccinationDate;
+        this.examinationDate = examinationDate;
+        this.petId = petId;
+        this.clientId = clientId;
     }
 
     @Override
@@ -63,6 +72,14 @@ public class PetPassport implements Identifiable<Long>, Serializable {
 
     public void setExaminationDate(LocalDate examinationDate) {
         this.examinationDate = examinationDate;
+    }
+
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     @Override

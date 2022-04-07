@@ -17,6 +17,7 @@ public class PetRepositoryJdbc implements PetRepository {
     public static final String SELECT_ALL_PETS = "SELECT * FROM `pets`;";
     public static final String SELECT_PET_BY_ID = "SELECT * FROM `pets` WHERE (id = ?);";
     public static final String SELECT_COUNT_PETS = "SELECT COUNT(*) FROM `pets`;";
+    public static final String SELECT_PET_BY_CLIENT_ID = "SELECT * FROM `pets` WHERE (client_id = ?);";
     public static final String INSERT_NEW_PET =
             "INSERT INTO `vet_clinic_management_system`.`pets` (`name`, `breed`, `weight`, `client_id`) values (?, ?, ?, ?) ;";
     public static final String UPDATE_PET =
@@ -64,12 +65,34 @@ public class PetRepositoryJdbc implements PetRepository {
     }
 
     @Override
+    public Pet findByClientId(Long id) throws NonexistingEntityException {
+        Pet pet = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_PET_BY_CLIENT_ID)) {
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            pet = toPets(rs).get(0);
+        } catch (SQLException e) {
+            log.error("Error creating connection to DB", e);
+            try {
+                throw new EntityPersistenceException("Error executing SQL query: " + SELECT_PET_BY_CLIENT_ID, e);
+            } catch (EntityPersistenceException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        if (pet != null) {
+            return pet;
+        } else {
+            throw new NonexistingEntityException("Pet with client ID " + id + "cannot be found.");
+        }
+    }
+
+    @Override
     public Pet create(Pet pet) throws EntityPersistenceException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_NEW_PET, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, pet.getName());
             statement.setString(2, pet.getBreed());
             statement.setInt(3, pet.getWeight());
-            statement.setLong(4, pet.getOwner().getId());
+            statement.setLong(4, pet.getClientId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -176,17 +199,13 @@ public class PetRepositoryJdbc implements PetRepository {
     public List<Pet> toPets(ResultSet rs) throws SQLException {
         List<Pet> results = new ArrayList<>();
         while (rs.next()) {
-            try {
-                results.add(new Pet(
-                        rs.getLong(1),
-                        rs.getString("name"),
-                        rs.getString("breed"),
-                        rs.getInt("weight"),
-                        clientRepository.findById(rs.getLong("client_id"))
-                ));
-            } catch (NonexistingEntityException e) {
-                System.out.println(e.getMessage());
-            }
+            results.add(new Pet(
+                    rs.getLong(1),
+                    rs.getString("name"),
+                    rs.getString("breed"),
+                    rs.getInt("weight"),
+                    rs.getLong("client_id")
+            ));
         }
         return results;
     }

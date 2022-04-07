@@ -1,8 +1,6 @@
 package course.academy.dao.impl;
 
 import course.academy.dao.*;
-import course.academy.dao.idGenerator.LongIdGenerator;
-import course.academy.dao.repoFileImpl.*;
 
 public class RepositoryFactoryImpl implements RepositoryFactory {
     @Override
@@ -11,18 +9,8 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     }
 
     @Override
-    public AdministratorRepository createAdminRepositoryFile(String dbFileName) {
-        return new AdminRepositoryFileImpl(new LongIdGenerator(), dbFileName);
-    }
-
-    @Override
     public DoctorRepository createDoctorRepository() {
         return new DoctorRepositoryImpl();
-    }
-
-    @Override
-    public DoctorRepository createDoctorRepositoryFile(String dbFileName) {
-        return new DoctorRepositoryFileImpl(new LongIdGenerator(), dbFileName);
     }
 
     @Override
@@ -31,18 +19,8 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     }
 
     @Override
-    public ClientRepository createClientRepositoryFile(String dbFileName) {
-        return new ClientRepositoryFileImpl(new LongIdGenerator(), dbFileName);
-    }
-
-    @Override
     public PetRepository createPetRepository() {
         return new PetRepositoryImpl();
-    }
-
-    @Override
-    public PetRepository createPetRepositoryFile(String dbFileName) {
-        return new PetRepositoryFileImpl(new LongIdGenerator(), dbFileName);
     }
 
     @Override
@@ -51,27 +29,12 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     }
 
     @Override
-    public PetPassportRepository createPassportRepositoryFile(String dbFileName) {
-        return new PetPassportRepositoryFileImpl(new LongIdGenerator(), dbFileName);
-    }
-
-    @Override
     public AppointmentRepository createAppointmentRepository() {
         return new AppointmentRepositoryImpl();
     }
 
     @Override
-    public AppointmentRepository createAppointmentRepositoryFile(String dbFileName) {
-        return new AppointmentRepositoryFileImpl(new LongIdGenerator(), dbFileName);
-    }
-
-    @Override
     public ExaminationRepository createExaminationRepository() {
         return new ExaminationRepositoryImpl();
-    }
-
-    @Override
-    public ExaminationRepository createExaminationRepositoryFile(String dbFileName) {
-        return new ExaminationRepositoryFileImpl(new LongIdGenerator(), dbFileName);
     }
 }

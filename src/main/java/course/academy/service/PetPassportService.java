@@ -11,6 +11,7 @@ public interface PetPassportService {
     void saveData();
     Collection<PetPassport> findAll() throws EntityPersistenceException;
     PetPassport getPassportById(Long id) throws NonexistingEntityException;
+    PetPassport getPassportByPetId(Long id) throws NonexistingEntityException;
     PetPassport addPassport(PetPassport passport) throws EntityPersistenceException;
     PetPassport updatePassport(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException;
     PetPassport deletePassportById(Long id) throws NonexistingEntityException;

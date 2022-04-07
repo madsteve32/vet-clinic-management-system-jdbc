@@ -74,4 +74,9 @@ public class PetPassportRepositoryImpl implements PetPassportRepository {
     public void clear() {
 
     }
+
+    @Override
+    public PetPassport findByPetId(Long id) throws NonexistingEntityException {
+        return null;
+    }
 }

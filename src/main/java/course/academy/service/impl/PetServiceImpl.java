@@ -29,6 +29,11 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
+    public Pet getPetByClientId(Long id) throws NonexistingEntityException {
+        return petRepository.findByClientId(id);
+    }
+
+    @Override
     public Pet addPet(Pet pet) throws EntityPersistenceException {
         Pet newPet = petRepository.create(pet);
         petRepository.save();

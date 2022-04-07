@@ -74,4 +74,9 @@ public class PetRepositoryImpl implements PetRepository {
     public void save() {
 
     }
+
+    @Override
+    public Pet findByClientId(Long id) throws NonexistingEntityException {
+        return null;
+    }
 }

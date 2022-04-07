@@ -56,7 +56,7 @@ public class Main {
         DoctorRepository doctorRepository = new DoctorRepositoryJdbc(connection);
         ClientRepository clientRepository = new ClientRepositoryJdbc(connection);
         PetRepository petRepository = new PetRepositoryJdbc(connection);
-        PetPassportRepository passportRepository = new PetPassportRepositoryImpl();
+        PetPassportRepository passportRepository = new PetPassportRepositoryJdbc(connection);
         AppointmentRepository appointmentRepository = new AppointmentRepositoryImpl();
         ExaminationRepository examinationRepository = new ExaminationRepositoryImpl();
 

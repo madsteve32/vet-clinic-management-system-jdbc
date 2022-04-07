@@ -9,17 +9,17 @@ public class Pet implements Identifiable<Long> {
     private String name;
     private String breed;
     private int weight;
-    private Client owner;
+    private Long clientId;
     private PetPassport petPassport;
 
     public Pet() {
     }
 
-    public Pet(String name, String breed, int weight, Client owner) {
+    public Pet(String name, String breed, int weight, Long clientId) {
         this.name = name;
         this.breed = breed;
         this.weight = weight;
-        this.owner = owner;
+        this.clientId = clientId;
     }
 
     public Pet(String name, String breed, int weight, PetPassport petPassport) {
@@ -29,20 +29,20 @@ public class Pet implements Identifiable<Long> {
         this.petPassport = petPassport;
     }
 
-    public Pet(String name, String breed, int weight, Client owner, PetPassport petPassport) {
+    public Pet(String name, String breed, int weight, Long clientId, PetPassport petPassport) {
         this.name = name;
         this.breed = breed;
         this.weight = weight;
-        this.owner = owner;
+        this.clientId = clientId;
         this.petPassport = petPassport;
     }
 
-    public Pet(Long id, String name, String breed, int weight, Client owner) {
+    public Pet(Long id, String name, String breed, int weight, Long clientId) {
         this.id = id;
         this.name = name;
         this.breed = breed;
         this.weight = weight;
-        this.owner = owner;
+        this.clientId = clientId;
     }
 
     @Override
@@ -79,12 +79,12 @@ public class Pet implements Identifiable<Long> {
         this.weight = weight;
     }
 
-    public Client getOwner() {
-        return owner;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public void setOwner(Client owner) {
-        this.owner = owner;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     public PetPassport getPetPassport() {
@@ -102,7 +102,7 @@ public class Pet implements Identifiable<Long> {
         sb.append(" | name=").append(name);
         sb.append(" | breed=").append(breed);
         sb.append(" | weight=").append(weight);
-        sb.append(" | Owner=").append(owner.getFirstName());
+        sb.append(" | clientId=").append(clientId);
         sb.append(" | petPassport=").append(petPassport).append(" |");
         return sb.toString();
     }

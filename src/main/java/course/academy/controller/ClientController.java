@@ -37,11 +37,18 @@ public class ClientController {
     public void init(Client loggedClient) {
         Menu menu = new Menu("Client Menu", List.of(
                 new Menu.Option("Load Data", () -> {
-                    clientService.loadData();
-                    petService.loadData();
-                    passportService.loadData();
-                    appointmentService.loadData();
-                    doctorService.loadData();
+                    if (loggedClient.getPet() == null) {
+                        try {
+                            Pet pet = petService.getPetByClientId(loggedClient.getId());
+                            loggedClient.setPet(pet);
+                            if (pet.getPetPassport() == null) {
+                                PetPassport passport = passportService.getPassportByPetId(pet.getId());
+                                pet.setPetPassport(passport);
+                            }
+                        } catch (NonexistingEntityException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
                     return "Data loaded successfully.";
                 }),
                 new Menu.Option("Update my information", () -> {
@@ -61,7 +68,6 @@ public class ClientController {
                 }),
                 new Menu.Option("Add pet", () -> {
                     Pet pet = new NewPetDialog().input();
-                    pet.setOwner(loggedClient);
                     Pet createdPet = petService.addPet(pet);
                     loggedClient.setPet(createdPet);
                     try {
@@ -69,26 +75,17 @@ public class ClientController {
                     } catch (NonexistingEntityException e) {
                         System.out.println(e.getMessage());
                     }
-                    return String.format("Pet with name= %s and breed= %s with owner= %s was added successfully.",
-                            createdPet.getName(), createdPet.getBreed(), createdPet.getOwner().getFirstName());
+                    return String.format("Pet with name= %s and breed= %s with was added successfully.",
+                            createdPet.getName(), createdPet.getBreed());
                 }),
                 new Menu.Option("Add Pet Passport", () -> {
                     PetPassport passport = new PetPassport();
-                    passport.setPetId(loggedClient.getPet().getId());
                     passport.setExaminationDate(LocalDate.now());
                     passport.setVaccinationDate(LocalDate.now());
                     passport.setDewormingDate(LocalDate.now());
+                    passport.setPetId(loggedClient.getPet().getId());
+                    passport.setClientId(loggedClient.getId());
                     PetPassport newPassport = passportService.addPassport(passport);
-                    try {
-                        Pet pet = petService.getPetById(newPassport.getPetId());
-                        pet.setPetPassport(newPassport);
-                        petService.updatePet(pet);
-                        loggedClient.setPet(pet);
-                        clientService.updateClient(loggedClient);
-                    } catch (NonexistingEntityException e) {
-                        System.out.println(e.getMessage());
-                    }
-
                     return String.format("Passport with id= %s and petId= %s was added successfully.",
                             newPassport.getId(), newPassport.getPetId());
                 }),

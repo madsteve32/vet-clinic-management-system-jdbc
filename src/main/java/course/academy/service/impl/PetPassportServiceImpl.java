@@ -36,6 +36,11 @@ public class PetPassportServiceImpl implements PetPassportService {
     }
 
     @Override
+    public PetPassport getPassportByPetId(Long id) throws NonexistingEntityException {
+        return passportRepository.findByPetId(id);
+    }
+
+    @Override
     public PetPassport addPassport(PetPassport passport) throws EntityPersistenceException {
         PetPassport newPassport = passportRepository.create(passport);
         passportRepository.save();
