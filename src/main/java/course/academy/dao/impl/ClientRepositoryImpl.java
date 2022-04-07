@@ -2,6 +2,7 @@ package course.academy.dao.impl;
 
 import course.academy.dao.ClientRepository;
 import course.academy.entities.Client;
+import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.NonexistingEntityException;
 
 import java.util.Collection;
@@ -73,5 +74,10 @@ public class ClientRepositoryImpl implements ClientRepository {
     @Override
     public void save() {
 
+    }
+
+    @Override
+    public Client updateByAdmin(Client client) throws NonexistingEntityException, EntityPersistenceException {
+        return null;
     }
 }

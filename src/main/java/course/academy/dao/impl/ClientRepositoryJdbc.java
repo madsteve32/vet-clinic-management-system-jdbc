@@ -21,6 +21,8 @@ public class ClientRepositoryJdbc implements ClientRepository {
     public static final String INSERT_NEW_CLIENT =
             "INSERT INTO `vet_clinic_management_system`.`clients` (`first_name`, `last_name`, `email`, `tel_number`, `username`, `password`, `gender`, `role`) values (?, ?, ?, ?, ?, ?, ?, ?) ;";
     public static final String UPDATE_CLIENT =
+            "UPDATE `vet_clinic_management_system`.`clients` SET `first_name` = ?, `last_name` = ?, `email` = ?, `tel_number` = ?, `username` = ?, `password` = ? WHERE (`id` = ?);";
+    public static final String UPDATE_CLIENT_BY_ADMIN =
             "UPDATE `vet_clinic_management_system`.`clients` SET `first_name` = ?, `last_name` = ?, `tel_number` = ?, `username` = ? WHERE (`id` = ?);";
     public static final String DELETE_CLIENT = "DELETE from `clients` WHERE (`id` = ?);";
 
@@ -107,9 +109,11 @@ public class ClientRepositoryJdbc implements ClientRepository {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLIENT)) {
             statement.setString(1, client.getFirstName());
             statement.setString(2, client.getLastName());
-            statement.setString(3, client.getTelNumber());
-            statement.setString(4, client.getUsername());
-            statement.setLong(5, client.getId());
+            statement.setString(3, client.getEmail());
+            statement.setString(4, client.getTelNumber());
+            statement.setString(5, client.getUsername());
+            statement.setString(6, client.getPassword());
+            statement.setLong(7, client.getId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -127,6 +131,35 @@ public class ClientRepositoryJdbc implements ClientRepository {
             }
             log.error("Error creating connection to DB", ex);
             throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_CLIENT, ex);
+        }
+        return client;
+    }
+
+    @Override
+    public Client updateByAdmin(Client client) throws EntityPersistenceException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLIENT_BY_ADMIN)) {
+            statement.setString(1, client.getFirstName());
+            statement.setString(2, client.getLastName());
+            statement.setString(3, client.getTelNumber());
+            statement.setString(4, client.getUsername());
+            statement.setLong(5, client.getId());
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                try {
+                    throw new EntityPersistenceException("Updating client failed, no rows affected.");
+                } catch (EntityPersistenceException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_CLIENT_BY_ADMIN, e);
+            }
+            log.error("Error creating connection to DB", ex);
+            throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_CLIENT_BY_ADMIN, ex);
         }
         return client;
     }
