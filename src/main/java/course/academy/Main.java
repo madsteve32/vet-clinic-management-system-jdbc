@@ -10,6 +10,8 @@ import course.academy.jdbc.JdbcSimpleDemo;
 import course.academy.service.*;
 import course.academy.service.impl.*;
 import course.academy.util.AdminValidator;
+import course.academy.util.ClientValidator;
+import course.academy.util.DoctorValidator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileInputStream;
@@ -41,8 +43,8 @@ public class Main {
         ExaminationRepository examinationRepository = new ExaminationRepositoryImpl();
 
         AdministratorService adminService = new AdministratorServiceImpl(adminRepository, new AdminValidator());
-        DoctorService doctorService = new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository);
-        ClientService clientService = new ClientServiceImpl(clientRepository, appointmentRepository, petRepository);
+        DoctorService doctorService = new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository, new DoctorValidator());
+        ClientService clientService = new ClientServiceImpl(clientRepository, appointmentRepository, petRepository, new ClientValidator());
         PetService petService = new PetServiceImpl(petRepository);
         PetPassportService passportService = new PetPassportServiceImpl(passportRepository);
         AppointmentService appointmentService = new AppointmentServiceImpl(appointmentRepository);

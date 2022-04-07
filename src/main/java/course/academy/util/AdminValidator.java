@@ -3,7 +3,6 @@ package course.academy.util;
 import course.academy.entities.Administrator;
 import course.academy.exception.ConstraintViolation;
 import course.academy.exception.ConstraintViolationException;
-import course.academy.exception.InvalidEntityDataException;
 
 import java.util.ArrayList;
 import java.util.List;

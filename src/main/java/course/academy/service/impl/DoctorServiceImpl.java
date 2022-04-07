@@ -6,25 +6,27 @@ import course.academy.dao.ExaminationRepository;
 import course.academy.entities.Appointment;
 import course.academy.entities.Doctor;
 import course.academy.entities.Examination;
+import course.academy.exception.ConstraintViolationException;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.InvalidEntityDataException;
 import course.academy.exception.NonexistingEntityException;
 import course.academy.service.DoctorService;
+import course.academy.util.DoctorValidator;
 
 import java.time.LocalDate;
 import java.util.Collection;
 
 public class DoctorServiceImpl implements DoctorService {
-    private final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private final String PASSWORD_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%_]).{8,20})";
     private final DoctorRepository doctorRepository;
     private final AppointmentRepository appointmentRepository;
     private final ExaminationRepository examinationRepository;
+    private final DoctorValidator doctorValidator;
 
-    public DoctorServiceImpl(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository, ExaminationRepository examinationRepository) {
+    public DoctorServiceImpl(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository, ExaminationRepository examinationRepository, DoctorValidator doctorValidator) {
         this.doctorRepository = doctorRepository;
         this.appointmentRepository = appointmentRepository;
         this.examinationRepository = examinationRepository;
+        this.doctorValidator = doctorValidator;
     }
 
     @Override
@@ -66,28 +68,11 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public Doctor addDoctor(Doctor doctor) throws InvalidEntityDataException, EntityPersistenceException {
-        int firstNameLength = doctor.getFirstName().length();
-        if (firstNameLength < 2 || firstNameLength > 15) {
-            throw new InvalidEntityDataException("First name must be between 2 and 15 characters.");
-        }
-
-        int lastNameLength = doctor.getLastName().length();
-        if (lastNameLength < 2 || lastNameLength > 15) {
-            throw new InvalidEntityDataException("Last name must be between 2 and 15 characters.");
-        }
-
-
-        if (!doctor.getEmail().matches(EMAIL_REGEX)) {
-            throw new InvalidEntityDataException("Email must be valid.");
-        }
-
-        int usernameLength = doctor.getUsername().length();
-        if (usernameLength < 2 || usernameLength > 15) {
-            throw new InvalidEntityDataException("Username must be between 2 and 15 characters.");
-        }
-
-        if (!doctor.getPassword().matches(PASSWORD_REGEX)) {
-            throw new InvalidEntityDataException("Password must be  8 to 15 characters long, at least one digit, one capital letter, and one sign different than letter or digit");
+        try {
+            doctorValidator.validate(doctor);
+        } catch (ConstraintViolationException e) {
+            throw new InvalidEntityDataException(
+                    String.format("Error creating doctor '%s'", doctor.getUsername()), e);
         }
         Doctor newDoctor = doctorRepository.create(doctor);
         doctorRepository.save();
@@ -96,28 +81,11 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public Doctor updateDoctor(Doctor doctor) throws InvalidEntityDataException, NonexistingEntityException, EntityPersistenceException {
-        int firstNameLength = doctor.getFirstName().length();
-        if (firstNameLength < 2 || firstNameLength > 15) {
-            throw new InvalidEntityDataException("First name must be between 2 and 15 characters.");
-        }
-
-        int lastNameLength = doctor.getLastName().length();
-        if (lastNameLength < 2 || lastNameLength > 15) {
-            throw new InvalidEntityDataException("Last name must be between 2 and 15 characters.");
-        }
-
-
-        if (!doctor.getEmail().matches(EMAIL_REGEX)) {
-            throw new InvalidEntityDataException("Email must be valid.");
-        }
-
-        int usernameLength = doctor.getUsername().length();
-        if (usernameLength < 2 || usernameLength > 15) {
-            throw new InvalidEntityDataException("Username must be between 2 and 15 characters.");
-        }
-
-        if (!doctor.getPassword().matches(PASSWORD_REGEX)) {
-            throw new InvalidEntityDataException("Password must be  8 to 15 characters long, at least one digit, one capital letter, and one sign different than letter or digit");
+        try {
+            doctorValidator.validate(doctor);
+        } catch (ConstraintViolationException e) {
+            throw new InvalidEntityDataException(
+                    String.format("Error updating doctor '%s'", doctor.getUsername()), e);
         }
         Doctor updatedDoctor = doctorRepository.update(doctor);
         doctorRepository.save();

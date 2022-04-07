@@ -6,25 +6,27 @@ import course.academy.dao.PetRepository;
 import course.academy.entities.Appointment;
 import course.academy.entities.Client;
 import course.academy.entities.Pet;
+import course.academy.exception.ConstraintViolationException;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.InvalidEntityDataException;
 import course.academy.exception.NonexistingEntityException;
 import course.academy.service.ClientService;
+import course.academy.util.ClientValidator;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 
 public class ClientServiceImpl implements ClientService {
-    private final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private final String PASSWORD_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%_]).{8,20})";
     private final ClientRepository clientRepository;
     private final AppointmentRepository appointmentRepository;
     private final PetRepository petRepository;
+    private final ClientValidator clientValidator;
 
-    public ClientServiceImpl(ClientRepository clientRepository, AppointmentRepository appointmentRepository, PetRepository petRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, AppointmentRepository appointmentRepository, PetRepository petRepository, ClientValidator clientValidator) {
         this.clientRepository = clientRepository;
         this.appointmentRepository = appointmentRepository;
         this.petRepository = petRepository;
+        this.clientValidator = clientValidator;
     }
 
     @Override
@@ -82,28 +84,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client addClient(Client client) throws InvalidEntityDataException, EntityPersistenceException {
-        int firstNameLength = client.getFirstName().length();
-        if (firstNameLength < 2 || firstNameLength > 15) {
-            throw new InvalidEntityDataException("First name must be between 2 and 15 characters.");
-        }
-
-        int lastNameLength = client.getLastName().length();
-        if (lastNameLength < 2 || lastNameLength > 15) {
-            throw new InvalidEntityDataException("Last name must be between 2 and 15 characters.");
-        }
-
-
-        if (!client.getEmail().matches(EMAIL_REGEX)) {
-            throw new InvalidEntityDataException("Email must be valid.");
-        }
-
-        int usernameLength = client.getUsername().length();
-        if (usernameLength < 2 || usernameLength > 15) {
-            throw new InvalidEntityDataException("Username must be between 2 and 15 characters.");
-        }
-
-        if (!client.getPassword().matches(PASSWORD_REGEX)) {
-            throw new InvalidEntityDataException("Password must be  8 to 15 characters long, at least one digit, one capital letter, and one sign different than letter or digit");
+        try {
+            clientValidator.validate(client);
+        } catch (ConstraintViolationException e) {
+            throw new InvalidEntityDataException(
+                    String.format("Error creating client '%s'", client.getUsername()), e);
         }
         Client newClient = clientRepository.create(client);
         clientRepository.save();
@@ -112,28 +97,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client updateClient(Client client) throws NonexistingEntityException, InvalidEntityDataException, EntityPersistenceException {
-        int firstNameLength = client.getFirstName().length();
-        if (firstNameLength < 2 || firstNameLength > 15) {
-            throw new InvalidEntityDataException("First name must be between 2 and 15 characters.");
-        }
-
-        int lastNameLength = client.getLastName().length();
-        if (lastNameLength < 2 || lastNameLength > 15) {
-            throw new InvalidEntityDataException("Last name must be between 2 and 15 characters.");
-        }
-
-
-        if (!client.getEmail().matches(EMAIL_REGEX)) {
-            throw new InvalidEntityDataException("Email must be valid.");
-        }
-
-        int usernameLength = client.getUsername().length();
-        if (usernameLength < 2 || usernameLength > 15) {
-            throw new InvalidEntityDataException("Username must be between 2 and 15 characters.");
-        }
-
-        if (!client.getPassword().matches(PASSWORD_REGEX)) {
-            throw new InvalidEntityDataException("Password must be  8 to 15 characters long, at least one digit, one capital letter, and one sign different than letter or digit");
+        try {
+            clientValidator.validate(client);
+        } catch (ConstraintViolationException e) {
+            throw new InvalidEntityDataException(
+                    String.format("Error updating client '%s'", client.getUsername()), e);
         }
         Client updatedClient = clientRepository.update(client);
         clientRepository.save();

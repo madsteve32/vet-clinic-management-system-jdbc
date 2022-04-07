@@ -4,6 +4,8 @@ import course.academy.dao.*;
 import course.academy.service.*;
 import course.academy.service.impl.*;
 import course.academy.util.AdminValidator;
+import course.academy.util.ClientValidator;
+import course.academy.util.DoctorValidator;
 
 public class ServiceFactoryImpl implements ServiceFactory {
     private final AdministratorRepository adminRepository;
@@ -31,12 +33,12 @@ public class ServiceFactoryImpl implements ServiceFactory {
 
     @Override
     public DoctorService createDoctorService() {
-        return new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository);
+        return new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository, new DoctorValidator());
     }
 
     @Override
     public ClientService createClientService() {
-        return new ClientServiceImpl(clientRepository, appointmentRepository, petRepository);
+        return new ClientServiceImpl(clientRepository, appointmentRepository, petRepository, new ClientValidator());
     }
 
     @Override
