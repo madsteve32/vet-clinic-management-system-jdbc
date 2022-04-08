@@ -3,11 +3,9 @@ package course.academy.entities;
 import course.academy.dao.Identifiable;
 import course.academy.entities.enums.Status;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Examination implements Identifiable<Long>, Serializable {
-    private static final long serialVersionUID = 1L;
+public class Examination implements Identifiable<Long> {
     private Long id;
     private String name;
     private LocalDate date;
@@ -16,7 +14,8 @@ public class Examination implements Identifiable<Long>, Serializable {
     public Examination() {
     }
 
-    public Examination(String name, LocalDate date, Status status) {
+    public Examination(Long id, String name, LocalDate date, Status status) {
+        this.id = id;
         this.name = name;
         this.date = date;
         this.status = status;

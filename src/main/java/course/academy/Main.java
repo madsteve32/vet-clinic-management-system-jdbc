@@ -6,13 +6,11 @@ import course.academy.dao.impl.*;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.InvalidEntityDataException;
 import course.academy.exception.NonexistingEntityException;
-import course.academy.jdbc.JdbcSimpleDemo;
 import course.academy.service.*;
 import course.academy.service.impl.*;
 import course.academy.util.AdminValidator;
 import course.academy.util.ClientValidator;
 import course.academy.util.DoctorValidator;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,11 +21,10 @@ import java.util.Properties;
 import static course.academy.util.JdbcUtils.closeConnection;
 import static course.academy.util.JdbcUtils.createDbConnection;
 
-@Slf4j
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException, EntityPersistenceException {
         Properties props = new Properties();
-        String dbConfigPath = JdbcSimpleDemo.class.getClassLoader()
+        String dbConfigPath = Main.class.getClassLoader()
                 .getResource("jdbc.properties").getPath();
         props.load(new FileInputStream(dbConfigPath));
 
@@ -40,7 +37,7 @@ public class Main {
         PetRepository petRepository = new PetRepositoryJdbc(connection);
         PetPassportRepository passportRepository = new PetPassportRepositoryJdbc(connection);
         AppointmentRepository appointmentRepository = new AppointmentRepositoryJdbc(connection);
-        ExaminationRepository examinationRepository = new ExaminationRepositoryImpl();
+        ExaminationRepository examinationRepository = new ExaminationRepositoryJdbc(connection);
 
         AdministratorService adminService = new AdministratorServiceImpl(adminRepository, new AdminValidator());
         DoctorService doctorService = new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository, new DoctorValidator());
