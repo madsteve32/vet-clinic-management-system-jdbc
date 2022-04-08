@@ -100,7 +100,7 @@ public class UserController {
             AdminController adminController = new AdminController(adminService, doctorService, clientService, appointmentService);
             adminController.init();
         } else if (loggedDoctor != null) {
-            DoctorController doctorController = new DoctorController(doctorService, appointmentService, clientService, examinationService, passportService);
+            DoctorController doctorController = new DoctorController(doctorService, appointmentService, clientService, petService, examinationService, passportService);
             doctorController.init(loggedDoctor);
         } else {
             ClientController clientController = new ClientController(clientService, petService, passportService, appointmentService, doctorService);

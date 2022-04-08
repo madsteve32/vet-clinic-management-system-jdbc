@@ -21,6 +21,8 @@ public class DoctorRepositoryJdbc implements DoctorRepository {
     public static final String INSERT_NEW_DOCTOR =
             "INSERT INTO `vet_clinic_management_system`.`doctors` (`first_name`, `last_name`, `email`, `tel_number`, `username`, `password`, `gender`, `role`) values (?, ?, ?, ?, ?, ?, ?, ?) ;";
     public static final String UPDATE_DOCTOR =
+            "UPDATE `vet_clinic_management_system`.`doctors` SET `first_name` = ?, `last_name` = ?, `email` = ?, `tel_number` = ?, `username` = ?, `password` = ? WHERE (`id` = ?);";
+    public static final String UPDATE_DOCTOR_BY_ADMIN =
             "UPDATE `vet_clinic_management_system`.`doctors` SET `first_name` = ?, `last_name` = ?, `tel_number` = ?, `username` = ? WHERE (`id` = ?);";
     public static final String DELETE_DOCTOR = "DELETE from `doctors` WHERE (`id` = ?);";
 
@@ -107,9 +109,11 @@ public class DoctorRepositoryJdbc implements DoctorRepository {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_DOCTOR)) {
             statement.setString(1, doctor.getFirstName());
             statement.setString(2, doctor.getLastName());
-            statement.setString(3, doctor.getTelNumber());
-            statement.setString(4, doctor.getUsername());
-            statement.setLong(5, doctor.getId());
+            statement.setString(3, doctor.getEmail());
+            statement.setString(4, doctor.getTelNumber());
+            statement.setString(5, doctor.getUsername());
+            statement.setString(6, doctor.getPassword());
+            statement.setLong(7, doctor.getId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -127,6 +131,35 @@ public class DoctorRepositoryJdbc implements DoctorRepository {
             }
             log.error("Error creating connection to DB", ex);
             throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_DOCTOR, ex);
+        }
+        return doctor;
+    }
+
+    @Override
+    public Doctor updateByAdmin(Doctor doctor) throws NonexistingEntityException, EntityPersistenceException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_DOCTOR_BY_ADMIN)) {
+            statement.setString(1, doctor.getFirstName());
+            statement.setString(2, doctor.getLastName());
+            statement.setString(3, doctor.getTelNumber());
+            statement.setString(4, doctor.getUsername());
+            statement.setLong(5, doctor.getId());
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                try {
+                    throw new EntityPersistenceException("Updating doctor failed, no rows affected.");
+                } catch (EntityPersistenceException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_DOCTOR_BY_ADMIN, e);
+            }
+            log.error("Error creating connection to DB", ex);
+            throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_DOCTOR_BY_ADMIN, ex);
         }
         return doctor;
     }

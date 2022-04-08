@@ -1,7 +1,6 @@
 package course.academy.dao.impl;
 
 import course.academy.dao.AppointmentRepository;
-import course.academy.entities.Administrator;
 import course.academy.entities.Appointment;
 import course.academy.entities.enums.ExaminationType;
 import course.academy.entities.enums.Status;
@@ -24,6 +23,8 @@ public class AppointmentRepositoryJdbc implements AppointmentRepository {
             "INSERT INTO `vet_clinic_management_system`.`appointments` (`examination_type`, `chosen_date_time`, `status`, `doctor_id`, `client_id`) values (?, ?, ?, ?, ?) ;";
     public static final String UPDATE_APPOINTMENT =
             "UPDATE `vet_clinic_management_system`.`appointments` SET `status` = ? WHERE (`id` = ?);";
+    public static final String UPDATE_APPOINTMENT_EXAMINATION =
+            "UPDATE `vet_clinic_management_system`.`appointments` SET `examination_id` = ? WHERE (`id` = ?);";
     public static final String DELETE_APPOINTMENT = "DELETE from `appointments` WHERE (`id` = ?);";
 
     private Connection connection;
@@ -110,7 +111,7 @@ public class AppointmentRepositoryJdbc implements AppointmentRepository {
     @Override
     public Appointment update(Appointment appointment) throws NonexistingEntityException, EntityPersistenceException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_APPOINTMENT)) {
-            statement.setString(1, appointment.getExaminationType().name());
+            statement.setString(1, appointment.getStatus().name());
             statement.setLong(2, appointment.getId());
 
             int affectedRows = statement.executeUpdate();
@@ -129,6 +130,32 @@ public class AppointmentRepositoryJdbc implements AppointmentRepository {
             }
             log.error("Error creating connection to DB", ex);
             throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_APPOINTMENT, ex);
+        }
+        return appointment;
+    }
+
+    @Override
+    public Appointment updateExamination(Appointment appointment) throws EntityPersistenceException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_APPOINTMENT_EXAMINATION)) {
+            statement.setLong(1, appointment.getExaminationId());
+            statement.setLong(2, appointment.getId());
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                try {
+                    throw new EntityPersistenceException("Updating appointment failed, no rows affected.");
+                } catch (EntityPersistenceException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_APPOINTMENT_EXAMINATION, e);
+            }
+            log.error("Error creating connection to DB", ex);
+            throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_APPOINTMENT_EXAMINATION, ex);
         }
         return appointment;
     }

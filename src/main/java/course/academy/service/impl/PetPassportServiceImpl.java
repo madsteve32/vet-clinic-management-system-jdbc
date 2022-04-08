@@ -55,6 +55,27 @@ public class PetPassportServiceImpl implements PetPassportService {
     }
 
     @Override
+    public PetPassport updatePassportDewormingDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException {
+        PetPassport updatedPassport = passportRepository.updateDewormingDate(passport);
+        passportRepository.save();
+        return updatedPassport;
+    }
+
+    @Override
+    public PetPassport updatePassportVaccinationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException {
+        PetPassport updatedPassport = passportRepository.updateVaccinationDate(passport);
+        passportRepository.save();
+        return updatedPassport;
+    }
+
+    @Override
+    public PetPassport updatePassportExaminationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException {
+        PetPassport updatedPassport = passportRepository.updateExaminationDate(passport);
+        passportRepository.save();
+        return updatedPassport;
+    }
+
+    @Override
     public PetPassport deletePassportById(Long id) throws NonexistingEntityException {
         PetPassport deletedPassport = passportRepository.deleteById(id);
         passportRepository.save();

@@ -10,8 +10,11 @@ import course.academy.view.NewExaminationDialog;
 import course.academy.view.newUserDialogs.NewDoctorDialog;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import static course.academy.entities.enums.Status.COMPLETED;
 
@@ -20,13 +23,15 @@ public class DoctorController {
     private DoctorService doctorService;
     private AppointmentService appointmentService;
     private ClientService clientService;
+    private PetService petService;
     private ExaminationService examinationService;
     private PetPassportService passportService;
 
-    public DoctorController(DoctorService doctorService, AppointmentService appointmentService, ClientService clientService, ExaminationService examinationService, PetPassportService passportService) {
+    public DoctorController(DoctorService doctorService, AppointmentService appointmentService, ClientService clientService, PetService petService, ExaminationService examinationService, PetPassportService passportService) {
         this.doctorService = doctorService;
         this.appointmentService = appointmentService;
         this.clientService = clientService;
+        this.petService = petService;
         this.examinationService = examinationService;
         this.passportService = passportService;
     }
@@ -34,11 +39,20 @@ public class DoctorController {
     public void init(Doctor loggedDoctor) {
         Menu menu = new Menu("Doctor Menu", List.of(
                 new Menu.Option("Load Data", () -> {
-                   doctorService.loadData();
-                   clientService.loadData();
-                   appointmentService.loadData();
-                   examinationService.loadData();
-                   return "Information loaded successfully.";
+                    List<Appointment> appointments = appointmentService.findAll().stream()
+                            .filter(a -> a.getChosenDoctorId().equals(loggedDoctor.getId()))
+                            .collect(Collectors.toList());
+                   if (loggedDoctor.getAppointments() == null) {
+                       loggedDoctor.setAppointments(new ArrayList<>());
+                       for (Appointment appointment : appointments) {
+                           loggedDoctor.getAppointments().add(appointment);
+                       }
+                   } else {
+                       for (Appointment appointment : appointments) {
+                           loggedDoctor.getAppointments().add(appointment);
+                       }
+                   }
+                   return "Data loaded successfully.";
                 }),
                 new Menu.Option("Update my information", () -> {
                     if (loggedDoctor != null) {
@@ -58,31 +72,42 @@ public class DoctorController {
                     return "You successfully update your information.";
                 }),
                 new Menu.Option("View my appointments", () -> {
-                    appointmentService.findAll().stream()
-                            .filter(a -> a.getChosenDoctorId().equals(loggedDoctor.getId()))
-                            .forEach(System.out::println);
+                    List<Appointment> appointments = loggedDoctor.getAppointments();
+                    if (appointments.size() > 0) {
+                        appointments.forEach(System.out::println);
+                    } else {
+                        return "You don't have any appointments.";
+                    }
                     return "This is your appointments.";
                 }),
                 new Menu.Option("Complete Appointment", () -> {
                     System.out.println("Appointments:");
-                    appointmentService.findAll().stream()
-                            .filter(a -> a.getChosenDoctorId().equals(loggedDoctor.getId()))
-                            .forEach(System.out::println);
+                    List<Appointment> appointments = loggedDoctor.getAppointments();
+                    appointments.forEach(System.out::println);
                     System.out.println("Please choose appointment by 'ID':");
                     long id = Long.parseLong(scanner.nextLine());
                     try {
                         Appointment appointment = appointmentService.getAppointmentById(id);
                         Client client = clientService.getClientById(appointment.getClientId());
-                        PetPassport passport = client.getPet().getPetPassport();
+                        Pet pet = petService.getPetByClientId(client.getId());
+                        PetPassport passport = passportService.getPassportByPetId(pet.getId());
                         if (appointment.getExaminationType().name().equals("DEWORMING")) {
-                            passport.setDewormingDate(LocalDate.now());
+                            System.out.println("Please enter next date for deworming in format (dd/MM/yyyy):");
+                            String strDate = scanner.nextLine();
+                            LocalDate date = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("d/MM/yyyy"));
+                            passport.setDewormingDate(date);
                             appointment.setStatus(COMPLETED);
                             appointmentService.updateAppointment(appointment);
+                            passportService.updatePassportDewormingDate(passport);
 
                         } else if (appointment.getExaminationType().name().equals("VACCINATION")) {
-                            passport.setVaccinationDate(LocalDate.now());
+                            System.out.println("Please enter next date for vaccination in format (dd/MM/yyyy):");
+                            String strDate = scanner.nextLine();
+                            LocalDate date = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("d/MM/yyyy"));
+                            passport.setVaccinationDate(date);
                             appointment.setStatus(COMPLETED);
                             appointmentService.updateAppointment(appointment);
+                            passportService.updatePassportVaccinationDate(passport);
                         } else {
                             passport.setExaminationDate(LocalDate.now());
                             System.out.println("Please choose command:");
@@ -92,7 +117,7 @@ public class DoctorController {
                             if (n == 1) {
                                 Examination examination = new NewExaminationDialog().input();
                                 Examination createdExamination = doctorService.createExamination(examination);
-//                                appointment.setExamination(createdExamination);
+                                appointment.setExaminationId(examination.getId());
                                 appointmentService.updateAppointment(appointment);
 
                                 return String.format("Examination ID= '%s' and name '%s' added successfully.",

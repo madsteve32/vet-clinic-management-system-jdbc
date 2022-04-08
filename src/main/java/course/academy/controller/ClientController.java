@@ -108,7 +108,6 @@ public class ClientController {
                     } catch (NonexistingEntityException e) {
                         System.out.println(e.getMessage());
                     }
-                    appointment.setClientId(loggedClient.getId());
                     Appointment newAppointment = appointmentService.addAppointment(appointment);
                     return String.format("Appointment with id= %s and Doctor id= %s was added successful;y.",
                             newAppointment.getId(), newAppointment.getChosenDoctorId());

@@ -17,6 +17,7 @@ public interface AppointmentService {
     Appointment getAppointmentById(Long id) throws NonexistingEntityException;
     Appointment addAppointment(Appointment appointment) throws InvalidEntityDataException, EntityPersistenceException;
     Appointment updateAppointment(Appointment appointment) throws InvalidEntityDataException, NonexistingEntityException, EntityPersistenceException;
+    Appointment updateAppointmentExamination(Appointment appointment) throws EntityPersistenceException;
     Appointment deleteAppointmentById(Long id) throws NonexistingEntityException;
     long count();
 }

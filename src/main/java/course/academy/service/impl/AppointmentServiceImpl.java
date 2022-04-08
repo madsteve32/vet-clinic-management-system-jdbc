@@ -65,6 +65,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public Appointment updateAppointmentExamination(Appointment appointment) throws EntityPersistenceException {
+        Appointment updatedAppointment = appointmentRepository.updateExamination(appointment);
+        appointmentRepository.save();
+        return updatedAppointment;
+    }
+
+    @Override
     public Appointment deleteAppointmentById(Long id) throws NonexistingEntityException {
         Appointment deletedAppointment = appointmentRepository.deleteById(id);
         appointmentRepository.save();

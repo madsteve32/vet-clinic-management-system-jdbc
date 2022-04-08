@@ -18,6 +18,7 @@ public interface DoctorService {
     Doctor getDoctorById(Long id) throws NonexistingEntityException;
     Doctor addDoctor(Doctor doctor) throws InvalidEntityDataException, EntityPersistenceException;
     Doctor updateDoctor(Doctor doctor) throws InvalidEntityDataException, NonexistingEntityException, EntityPersistenceException;
+    Doctor updateDoctorByAdmin(Doctor doctor) throws InvalidEntityDataException, NonexistingEntityException, EntityPersistenceException;
     Doctor deleteDoctorById(Long id) throws NonexistingEntityException;
     Doctor findByUsername(String username) throws EntityPersistenceException;
     long count();

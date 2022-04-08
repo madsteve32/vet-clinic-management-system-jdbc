@@ -2,6 +2,7 @@ package course.academy.dao.impl;
 
 import course.academy.dao.AppointmentRepository;
 import course.academy.entities.Appointment;
+import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.NonexistingEntityException;
 
 import java.util.*;
@@ -19,6 +20,11 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
         ArrayList<Appointment> sorted = new ArrayList<>(appointments.values());
         sorted.sort(comparator);
         return sorted;
+    }
+
+    @Override
+    public Appointment updateExamination(Appointment appointment) throws EntityPersistenceException {
+        return null;
     }
 
     @Override

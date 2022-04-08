@@ -2,6 +2,7 @@ package course.academy.dao.impl;
 
 import course.academy.dao.DoctorRepository;
 import course.academy.entities.Doctor;
+import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.NonexistingEntityException;
 
 import java.util.Collection;
@@ -76,5 +77,10 @@ public class DoctorRepositoryImpl implements DoctorRepository {
     @Override
     public void save() {
 
+    }
+
+    @Override
+    public Doctor updateByAdmin(Doctor doctor) throws NonexistingEntityException, EntityPersistenceException {
+        return null;
     }
 }

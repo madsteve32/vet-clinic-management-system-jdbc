@@ -93,6 +93,19 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public Doctor updateDoctorByAdmin(Doctor doctor) throws InvalidEntityDataException, NonexistingEntityException, EntityPersistenceException {
+        try {
+            doctorValidator.validate(doctor);
+        } catch (ConstraintViolationException e) {
+            throw new InvalidEntityDataException(
+                    String.format("Error updating doctor '%s'", doctor.getUsername()), e);
+        }
+        Doctor updatedDoctor = doctorRepository.updateByAdmin(doctor);
+        doctorRepository.save();
+        return updatedDoctor;
+    }
+
+    @Override
     public Doctor deleteDoctorById(Long id) throws NonexistingEntityException {
         Doctor deletedDoctor = doctorRepository.deleteById(id);
         doctorRepository.save();

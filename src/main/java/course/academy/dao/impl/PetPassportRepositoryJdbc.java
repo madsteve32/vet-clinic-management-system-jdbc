@@ -21,6 +21,12 @@ public class PetPassportRepositoryJdbc implements PetPassportRepository {
             "INSERT INTO `vet_clinic_management_system`.`pet_passports` (`deworming_date`, `vaccination_date`, `examination_date`, `pets_id`, `pets_client_id`) values (?, ?, ?, ?, ?) ;";
     public static final String UPDATE_PASSPORT =
             "UPDATE `vet_clinic_management_system`.`pet_passports` SET `deworming_date` = ?, `vaccination_date` = ?, `examination_date` = ? WHERE (`id` = ?);";
+    public static final String UPDATE_PASSPORT_DEWORMING_DATE =
+            "UPDATE `vet_clinic_management_system`.`pet_passports` SET `deworming_date` = ? WHERE (`id` = ?);";
+    public static final String UPDATE_PASSPORT_VACCINATION_DATE =
+            "UPDATE `vet_clinic_management_system`.`pet_passports` SET `vaccination_date` = ? WHERE (`id` = ?);";
+    public static final String UPDATE_PASSPORT_EXAMINATION_DATE =
+            "UPDATE `vet_clinic_management_system`.`pet_passports` SET `examination_date` = ? WHERE (`id` = ?);";
     public static final String DELETE_PASSPORT = "DELETE from `pet_passports` WHERE (`id` = ?);";
 
     private Connection connection;
@@ -126,7 +132,7 @@ public class PetPassportRepositoryJdbc implements PetPassportRepository {
             statement.setDate(1, Date.valueOf(passport.getDewormingDate()));
             statement.setDate(2, Date.valueOf(passport.getVaccinationDate()));
             statement.setDate(3, Date.valueOf(passport.getExaminationDate()));
-            statement.setLong(5, passport.getId());
+            statement.setLong(4, passport.getId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
@@ -144,6 +150,84 @@ public class PetPassportRepositoryJdbc implements PetPassportRepository {
             }
             log.error("Error creating connection to DB", ex);
             throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_PASSPORT, ex);
+        }
+        return passport;
+    }
+
+    @Override
+    public PetPassport updateDewormingDate(PetPassport passport) throws EntityPersistenceException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_PASSPORT_DEWORMING_DATE)) {
+            statement.setDate(1, Date.valueOf(passport.getDewormingDate()));
+            statement.setLong(2, passport.getId());
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                try {
+                    throw new EntityPersistenceException("Updating passport failed, no rows affected.");
+                } catch (EntityPersistenceException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_PASSPORT_DEWORMING_DATE, e);
+            }
+            log.error("Error creating connection to DB", ex);
+            throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_PASSPORT_DEWORMING_DATE, ex);
+        }
+        return passport;
+    }
+
+    @Override
+    public PetPassport updateVaccinationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_PASSPORT_VACCINATION_DATE)) {
+            statement.setDate(1, Date.valueOf(passport.getVaccinationDate()));
+            statement.setLong(2, passport.getId());
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                try {
+                    throw new EntityPersistenceException("Updating passport failed, no rows affected.");
+                } catch (EntityPersistenceException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_PASSPORT_VACCINATION_DATE, e);
+            }
+            log.error("Error creating connection to DB", ex);
+            throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_PASSPORT_VACCINATION_DATE, ex);
+        }
+        return passport;
+    }
+
+    @Override
+    public PetPassport updateExaminationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_PASSPORT_EXAMINATION_DATE)) {
+            statement.setDate(1, Date.valueOf(passport.getExaminationDate()));
+            statement.setLong(2, passport.getId());
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                try {
+                    throw new EntityPersistenceException("Updating passport failed, no rows affected.");
+                } catch (EntityPersistenceException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_PASSPORT_EXAMINATION_DATE, e);
+            }
+            log.error("Error creating connection to DB", ex);
+            throw new EntityPersistenceException("Error executing SQL query: " + UPDATE_PASSPORT_EXAMINATION_DATE, ex);
         }
         return passport;
     }

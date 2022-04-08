@@ -2,6 +2,7 @@ package course.academy.dao.impl;
 
 import course.academy.dao.PetPassportRepository;
 import course.academy.entities.PetPassport;
+import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.NonexistingEntityException;
 
 import java.util.Collection;
@@ -77,6 +78,21 @@ public class PetPassportRepositoryImpl implements PetPassportRepository {
 
     @Override
     public PetPassport findByPetId(Long id) throws NonexistingEntityException {
+        return null;
+    }
+
+    @Override
+    public PetPassport updateDewormingDate(PetPassport passport) throws NonexistingEntityException {
+        return null;
+    }
+
+    @Override
+    public PetPassport updateVaccinationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException {
+        return null;
+    }
+
+    @Override
+    public PetPassport updateExaminationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException {
         return null;
     }
 }

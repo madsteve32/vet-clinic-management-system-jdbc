@@ -14,5 +14,8 @@ public interface PetPassportService {
     PetPassport getPassportByPetId(Long id) throws NonexistingEntityException;
     PetPassport addPassport(PetPassport passport) throws EntityPersistenceException;
     PetPassport updatePassport(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException;
+    PetPassport updatePassportDewormingDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException;
+    PetPassport updatePassportVaccinationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException;
+    PetPassport updatePassportExaminationDate(PetPassport passport) throws NonexistingEntityException, EntityPersistenceException;
     PetPassport deletePassportById(Long id) throws NonexistingEntityException;
 }

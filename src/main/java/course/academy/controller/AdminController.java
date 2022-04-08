@@ -114,7 +114,7 @@ public class AdminController {
                         updatedDoctor.setTelNumber(doctor.getTelNumber());
                         updatedDoctor.setUsername(doctor.getUsername());
                         try {
-                            doctorService.updateDoctor(updatedDoctor);
+                            doctorService.updateDoctorByAdmin(updatedDoctor);
                             return String.format("Doctor with ID='%s' and username='%s' was updated successfully.",
                                     updatedDoctor.getId(), updatedDoctor.getUsername());
                         } catch (NonexistingEntityException e) {
