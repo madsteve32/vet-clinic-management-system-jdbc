@@ -133,7 +133,7 @@ public class ClientController {
                 new Menu.Option("Complete Examination", () -> {
                     System.out.println("Please choose appointment by ID");
                     appointmentService.findAll().stream()
-                            .filter(a -> a.getExaminationId() != null && a.getClientId().equals(loggedClient.getId()))
+                            .filter(a -> a.getExaminationId() > 0 && a.getClientId().equals(loggedClient.getId()))
                             .forEach(System.out::println);
                     long id = Long.parseLong(scanner.nextLine());
                     try {
@@ -153,10 +153,13 @@ public class ClientController {
                             .filter(a -> a.getStatus().name().equals("COMPLETED"))
                             .collect(Collectors.toList());
                     if (appointments.size() > 0) {
+                        appointments.forEach(System.out::println);
                         System.out.println("Please choose appointment by ID to be deleted:");
                         long id = Long.parseLong(scanner.nextLine());
                         try {
-                            appointmentService.deleteAppointmentById(id);
+                            Appointment deletedAppointment = appointmentService.deleteAppointmentById(id);
+                            Examination examination = examinationService.getExaminationById(deletedAppointment.getExaminationId());
+                            examinationService.deleteExaminationById(examination.getId());
                         } catch (NonexistingEntityException e) {
                             System.out.println(e.getMessage());
                         }
