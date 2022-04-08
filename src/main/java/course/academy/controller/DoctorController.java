@@ -116,9 +116,9 @@ public class DoctorController {
                             int n = Integer.parseInt(scanner.nextLine());
                             if (n == 1) {
                                 Examination examination = new NewExaminationDialog().input();
-                                Examination createdExamination = doctorService.createExamination(examination);
+                                Examination createdExamination = examinationService.addExamination(examination);
                                 appointment.setExaminationId(examination.getId());
-                                appointmentService.updateAppointment(appointment);
+                                appointmentService.updateAppointmentExamination(appointment);
 
                                 return String.format("Examination ID= '%s' and name '%s' added successfully.",
                                         createdExamination.getId(), createdExamination.getName());
