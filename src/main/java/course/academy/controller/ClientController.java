@@ -71,26 +71,26 @@ public class ClientController {
                 }),
                 new Menu.Option("Add pet", () -> {
                     Pet pet = new NewPetDialog().input();
+                    pet.setClientId(loggedClient.getId());
                     Pet createdPet = petService.addPet(pet);
                     loggedClient.setPet(createdPet);
-                    try {
-                        clientService.updateClient(loggedClient);
-                    } catch (NonexistingEntityException e) {
-                        System.out.println(e.getMessage());
-                    }
-                    return String.format("Pet with name= %s and breed= %s with was added successfully.",
+                    return String.format("Pet with name= %s and breed= %s was added successfully.",
                             createdPet.getName(), createdPet.getBreed());
                 }),
                 new Menu.Option("Add Pet Passport", () -> {
-                    PetPassport passport = new PetPassport();
-                    passport.setExaminationDate(LocalDate.now());
-                    passport.setVaccinationDate(LocalDate.now());
-                    passport.setDewormingDate(LocalDate.now());
-                    passport.setPetId(loggedClient.getPet().getId());
-                    passport.setClientId(loggedClient.getId());
-                    PetPassport newPassport = passportService.addPassport(passport);
-                    return String.format("Passport with id= %s and petId= %s was added successfully.",
-                            newPassport.getId(), newPassport.getPetId());
+                    try {
+                        Pet pet = petService.getPetByClientId(loggedClient.getId());
+                        PetPassport passport = new PetPassport();
+                        passport.setExaminationDate(LocalDate.now());
+                        passport.setVaccinationDate(LocalDate.now());
+                        passport.setDewormingDate(LocalDate.now());
+                        passport.setPetId(pet.getId());
+                        passport.setClientId(loggedClient.getId());
+                        passportService.addPassport(passport);
+                    } catch (NonexistingEntityException e) {
+                        e.printStackTrace();
+                    }
+                    return "Pet passport added successfully.";
                 }),
                 new Menu.Option("Create Appointment", () -> {
                     Appointment appointment = new NewAppointmentDialog().input();
@@ -102,12 +102,6 @@ public class ClientController {
                     try {
                         Doctor chosenDoctor = doctorService.getDoctorById(id);
                         appointment.setChosenDoctorId(chosenDoctor.getId());
-//                        if (chosenDoctor.getAppointments() != null && chosenDoctor.getAppointments().size() < 10) {
-////                            appointment.setChosenDoctor(chosenDoctor);
-//                        } else {
-//                            System.out.println("Sorry doctor appointments is full chose another doctor.");
-//                            id = Long.parseLong(scanner.nextLine());
-//                        }
                     } catch (NonexistingEntityException e) {
                         System.out.println(e.getMessage());
                     }
@@ -116,11 +110,11 @@ public class ClientController {
                             newAppointment.getId(), newAppointment.getChosenDoctorId());
                 }),
                 new Menu.Option("View my appointments", () -> {
-                    Collection<Appointment> appointments = appointmentService.findAll();
+                    List<Appointment> appointments = appointmentService.findAll().stream()
+                            .filter(a -> a.getClientId().equals(loggedClient.getId()))
+                            .collect(Collectors.toList());
                     if (appointments.size() > 0) {
-                        appointments.stream()
-                                .filter(a -> a.getClientId().equals(loggedClient.getId()))
-                                .forEach(System.out::println);
+                        appointments.forEach(System.out::println);
                     } else {
                         return "You don't have any appointments";
                     }

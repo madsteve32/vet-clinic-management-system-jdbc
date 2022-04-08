@@ -55,4 +55,9 @@ public class ServiceFactoryImpl implements ServiceFactory {
     public AppointmentService createAppointmentService() {
         return new AppointmentServiceImpl(appointmentRepository);
     }
+
+    @Override
+    public ExaminationService createExaminationService() {
+        return new ExaminationServiceImpl(examinationRepository);
+    }
 }

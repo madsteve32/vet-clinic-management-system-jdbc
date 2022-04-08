@@ -12,4 +12,5 @@ public interface ServiceFactory {
     PetService createPetService();
     PetPassportService createPassportService();
     AppointmentService createAppointmentService();
+    ExaminationService createExaminationService();
 }

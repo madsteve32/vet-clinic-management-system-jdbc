@@ -40,13 +40,14 @@ public class Main {
         AppointmentRepository appointmentRepository = repositoryFactory.createAppointmentRepository();
         ExaminationRepository examinationRepository = repositoryFactory.createExaminationRepository();
 
-        AdministratorService adminService = new AdministratorServiceImpl(adminRepository, new AdminValidator());
-        DoctorService doctorService = new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository, new DoctorValidator());
-        ClientService clientService = new ClientServiceImpl(clientRepository, appointmentRepository, petRepository, new ClientValidator());
-        PetService petService = new PetServiceImpl(petRepository);
-        PetPassportService passportService = new PetPassportServiceImpl(passportRepository);
-        AppointmentService appointmentService = new AppointmentServiceImpl(appointmentRepository);
-        ExaminationService examinationService = new ExaminationServiceImpl(examinationRepository);
+        ServiceFactory serviceFactory = new ServiceFactoryImpl(adminRepository, doctorRepository, clientRepository, petRepository, passportRepository, appointmentRepository, examinationRepository);
+        AdministratorService adminService = serviceFactory.createAdminService();
+        DoctorService doctorService = serviceFactory.createDoctorService();
+        ClientService clientService = serviceFactory.createClientService();
+        PetService petService = serviceFactory.createPetService();
+        PetPassportService passportService = serviceFactory.createPassportService();
+        AppointmentService appointmentService = serviceFactory.createAppointmentService();
+        ExaminationService examinationService = serviceFactory.createExaminationService();
 //        try {
 //            adminService.addAdmin(new Administrator("Steven", "Lyutov", "steven@test.com", "0898887766",
 //                    "admin", "Admin_123", MALE, ADMIN));
