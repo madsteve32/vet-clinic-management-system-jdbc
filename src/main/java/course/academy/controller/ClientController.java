@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import static course.academy.entities.enums.Status.COMPLETED;
 
@@ -24,13 +25,15 @@ public class ClientController {
     private PetService petService;
     private PetPassportService passportService;
     private AppointmentService appointmentService;
+    private ExaminationService examinationService;
     private DoctorService doctorService;
 
-    public ClientController(ClientService clientService, PetService petService, PetPassportService passportService, AppointmentService appointmentService, DoctorService doctorService) {
+    public ClientController(ClientService clientService, PetService petService, PetPassportService passportService, AppointmentService appointmentService, ExaminationService examinationService, DoctorService doctorService) {
         this.clientService = clientService;
         this.petService = petService;
         this.passportService = passportService;
         this.appointmentService = appointmentService;
+        this.examinationService = examinationService;
         this.doctorService = doctorService;
     }
 
@@ -129,30 +132,36 @@ public class ClientController {
                 }),
                 new Menu.Option("Complete Examination", () -> {
                     System.out.println("Please choose appointment by ID");
-//                    appointmentService.findAll().stream()
-//                            .filter(a -> a.getExamination() != null)
-//                            .forEach(System.out::println);
+                    appointmentService.findAll().stream()
+                            .filter(a -> a.getExaminationId() != null && a.getClientId().equals(loggedClient.getId()))
+                            .forEach(System.out::println);
                     long id = Long.parseLong(scanner.nextLine());
                     try {
                         Appointment appointment = appointmentService.getAppointmentById(id);
-//                        Examination examination = appointment.getExamination();
-//                        examination.setStatus(COMPLETED);
+                        Examination examination = examinationService.getExaminationById(appointment.getExaminationId());
+                        examination.setStatus(COMPLETED);
+                        examinationService.updateExamination(examination);
                         appointment.setStatus(COMPLETED);
+                        appointmentService.updateAppointment(appointment);
                     } catch (NonexistingEntityException e) {
                         System.out.println(e.getMessage());
                     }
                     return "You successfully complete your pet examination.";
                 }),
                 new Menu.Option("Check completed appointments", () -> {
-                    appointmentService.findAll().stream()
+                    Collection<Appointment> appointments = appointmentService.findAll().stream()
                             .filter(a -> a.getStatus().name().equals("COMPLETED"))
-                            .forEach(System.out::println);
-                    System.out.println("Please choose appointment by ID to be deleted:");
-                    long id = Long.parseLong(scanner.nextLine());
-                    try {
-                        appointmentService.deleteAppointmentById(id);
-                    } catch (NonexistingEntityException e) {
-                        System.out.println(e.getMessage());
+                            .collect(Collectors.toList());
+                    if (appointments.size() > 0) {
+                        System.out.println("Please choose appointment by ID to be deleted:");
+                        long id = Long.parseLong(scanner.nextLine());
+                        try {
+                            appointmentService.deleteAppointmentById(id);
+                        } catch (NonexistingEntityException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } else {
+                        return "You don't have any completed appointments.";
                     }
                     return "You successfully delete completed appointment.";
                 })

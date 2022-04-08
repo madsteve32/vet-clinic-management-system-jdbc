@@ -110,6 +110,7 @@ public class DoctorController {
                             passportService.updatePassportVaccinationDate(passport);
                         } else {
                             passport.setExaminationDate(LocalDate.now());
+                            passportService.updatePassportExaminationDate(passport);
                             System.out.println("Please choose command:");
                             System.out.println("1.Create Examination");
                             System.out.println("2.Exit");

@@ -103,7 +103,7 @@ public class UserController {
             DoctorController doctorController = new DoctorController(doctorService, appointmentService, clientService, petService, examinationService, passportService);
             doctorController.init(loggedDoctor);
         } else {
-            ClientController clientController = new ClientController(clientService, petService, passportService, appointmentService, doctorService);
+            ClientController clientController = new ClientController(clientService, petService, passportService, appointmentService, examinationService, doctorService);
             clientController.init(loggedClient);
         }
     }

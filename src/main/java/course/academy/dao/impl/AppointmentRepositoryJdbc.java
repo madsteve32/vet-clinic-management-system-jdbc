@@ -217,7 +217,8 @@ public class AppointmentRepositoryJdbc implements AppointmentRepository {
                     rs.getTimestamp("chosen_date_time").toLocalDateTime(),
                     Status.valueOf(rs.getString("status")),
                     rs.getLong("doctor_id"),
-                    rs.getLong("client_id")
+                    rs.getLong("client_id"),
+                    rs.getLong("examination_id")
             ));
         }
         return results;
