@@ -31,13 +31,14 @@ public class Main {
         //1. Load DB driver
         Connection connection = createDbConnection(props);
 
-        AdministratorRepository adminRepository = new AdminRepositoryJdbc(connection);
-        DoctorRepository doctorRepository = new DoctorRepositoryJdbc(connection);
-        ClientRepository clientRepository = new ClientRepositoryJdbc(connection);
-        PetRepository petRepository = new PetRepositoryJdbc(connection);
-        PetPassportRepository passportRepository = new PetPassportRepositoryJdbc(connection);
-        AppointmentRepository appointmentRepository = new AppointmentRepositoryJdbc(connection);
-        ExaminationRepository examinationRepository = new ExaminationRepositoryJdbc(connection);
+        RepositoryFactory repositoryFactory = new RepositoryFactoryImpl(connection);
+        AdministratorRepository adminRepository = repositoryFactory.createAdminRepository();
+        DoctorRepository doctorRepository = repositoryFactory.createDoctorRepository();
+        ClientRepository clientRepository = repositoryFactory.createClientRepository();
+        PetRepository petRepository = repositoryFactory.createPetRepository();
+        PetPassportRepository passportRepository = repositoryFactory.createPassportRepository();
+        AppointmentRepository appointmentRepository = repositoryFactory.createAppointmentRepository();
+        ExaminationRepository examinationRepository = repositoryFactory.createExaminationRepository();
 
         AdministratorService adminService = new AdministratorServiceImpl(adminRepository, new AdminValidator());
         DoctorService doctorService = new DoctorServiceImpl(doctorRepository, appointmentRepository, examinationRepository, new DoctorValidator());
