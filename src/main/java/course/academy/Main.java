@@ -3,14 +3,11 @@ package course.academy;
 import course.academy.controller.UserController;
 import course.academy.dao.*;
 import course.academy.dao.impl.*;
+import course.academy.entities.Administrator;
 import course.academy.exception.EntityPersistenceException;
 import course.academy.exception.InvalidEntityDataException;
 import course.academy.exception.NonexistingEntityException;
 import course.academy.service.*;
-import course.academy.service.impl.*;
-import course.academy.util.AdminValidator;
-import course.academy.util.ClientValidator;
-import course.academy.util.DoctorValidator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,6 +15,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static course.academy.entities.enums.Gender.MALE;
+import static course.academy.entities.enums.Role.ADMIN;
 import static course.academy.util.JdbcUtils.closeConnection;
 import static course.academy.util.JdbcUtils.createDbConnection;
 

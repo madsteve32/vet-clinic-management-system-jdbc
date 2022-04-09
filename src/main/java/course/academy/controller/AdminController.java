@@ -95,11 +95,13 @@ public class AdminController {
                     Doctor updatedDoctor = doctorService.findByUsername(username);
                     Client updatedClient = clientService.findByUsername(username);
                     if (updatedAdmin != null) {
-                        Administrator admin = new UpdateAdminDialog().input();
+                        Administrator admin = new NewAdminDialog().input();
                         updatedAdmin.setFirstName(admin.getFirstName());
                         updatedAdmin.setLastName(admin.getLastName());
+                        updatedAdmin.setEmail(admin.getEmail());
                         updatedAdmin.setTelNumber(admin.getTelNumber());
                         updatedAdmin.setUsername(admin.getUsername());
+                        updatedAdmin.setPassword(admin.getPassword());
                         try {
                             adminService.updateAdmin(updatedAdmin);
                             return String.format("Admin with ID='%s' and username='%s' was updated successfully.",
@@ -108,13 +110,15 @@ public class AdminController {
                             e.printStackTrace();
                         }
                     } else if (updatedDoctor != null) {
-                        Doctor doctor = new UpdateDoctorDialog().input();
+                        Doctor doctor = new NewDoctorDialog().input();
                         updatedDoctor.setFirstName(doctor.getFirstName());
                         updatedDoctor.setLastName(doctor.getLastName());
+                        updatedDoctor.setEmail(doctor.getEmail());
                         updatedDoctor.setTelNumber(doctor.getTelNumber());
                         updatedDoctor.setUsername(doctor.getUsername());
+                        updatedDoctor.setPassword(doctor.getPassword());
                         try {
-                            doctorService.updateDoctorByAdmin(updatedDoctor);
+                            doctorService.updateDoctor(updatedDoctor);
                             return String.format("Doctor with ID='%s' and username='%s' was updated successfully.",
                                     updatedDoctor.getId(), updatedDoctor.getUsername());
                         } catch (NonexistingEntityException e) {
@@ -124,10 +128,12 @@ public class AdminController {
                         Client client = new UpdateClientDialog().input();
                         updatedClient.setFirstName(client.getFirstName());
                         updatedClient.setLastName(client.getLastName());
+                        updatedClient.setEmail(client.getEmail());
                         updatedClient.setTelNumber(client.getTelNumber());
                         updatedClient.setUsername(client.getUsername());
+                        updatedClient.setPassword(client.getPassword());
                         try {
-                            clientService.updateClientByAdmin(updatedClient);
+                            clientService.updateClient(updatedClient);
                             return String.format("Client with ID='%s' and username='%s' was updated successfully.",
                                     updatedClient.getId(), updatedClient.getUsername());
                         } catch (NonexistingEntityException e) {
@@ -173,7 +179,6 @@ public class AdminController {
                 }),
                 new Menu.Option("View all Appointments", () -> {
                     System.out.println("Appointments:");
-                    appointmentService.loadData();
                     appointmentService.findAll().forEach(System.out::println);
                     return "Appointments total count is: " + appointmentService.findAll().size();
                 }),
@@ -192,6 +197,19 @@ public class AdminController {
                         e.printStackTrace();
                     }
                     return "Appointment completed";
+                }),
+                new Menu.Option("Delete Appointment", () -> {
+                    System.out.println("Appointments");
+                    appointmentService.findAll().forEach(System.out::println);
+                    System.out.println("Please chose appointment by ID to be deleted:");
+                    long id = Long.parseLong(scanner.nextLine());
+                    Appointment deletedAppointment = null;
+                    try {
+                        deletedAppointment = appointmentService.deleteAppointmentById(id);
+                        return String.format("You successful delete appointment with ID= %s", deletedAppointment.getId());
+                    } catch (NonexistingEntityException e) {
+                        return "Appointment with ID= " + id + "does not exist.";
+                    }
                 }),
                 new Menu.Option("Check completed appointments", () -> {
                     appointmentService.findAll().stream()

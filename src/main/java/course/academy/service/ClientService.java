@@ -20,7 +20,6 @@ public interface ClientService {
     Client getClientById(Long id) throws NonexistingEntityException;
     Client addClient(Client client) throws InvalidEntityDataException, EntityPersistenceException;
     Client updateClient(Client client) throws NonexistingEntityException, InvalidEntityDataException, EntityPersistenceException;
-    Client updateClientByAdmin(Client client) throws NonexistingEntityException, EntityPersistenceException, InvalidEntityDataException;
     Client deleteClientById(Long id) throws NonexistingEntityException;
     Client findByUsername(String username) throws EntityPersistenceException;
     long count();

@@ -35,7 +35,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> findAllSorted(Comparator<Appointment> comparator) {
+    public List<Appointment> findAllSorted(Comparator<Appointment> comparator) throws EntityPersistenceException {
         return appointmentRepository.findAllSorted(comparator);
     }
 

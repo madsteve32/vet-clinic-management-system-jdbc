@@ -41,15 +41,21 @@ public class ClientController {
         Menu menu = new Menu("Client Menu", List.of(
                 new Menu.Option("Load Data", () -> {
                     if (loggedClient.getPet() == null) {
+                        Pet pet = null;
                         try {
-                            Pet pet = petService.getPetByClientId(loggedClient.getId());
+                            pet = petService.getPetByClientId(loggedClient.getId());
                             loggedClient.setPet(pet);
-                            if (pet.getPetPassport() == null) {
-                                PetPassport passport = passportService.getPassportByPetId(pet.getId());
-                                pet.setPetPassport(passport);
-                            }
                         } catch (NonexistingEntityException e) {
-                            System.out.println(e.getMessage());
+                            return "You don't have created pet.";
+                        }
+                        if (pet.getPetPassport() == null) {
+                            PetPassport passport = null;
+                            try {
+                                passport = passportService.getPassportByPetId(pet.getId());
+                                pet.setPetPassport(passport);
+                            } catch (NonexistingEntityException e) {
+                                return "You don't have passport for your pet.";
+                            }
                         }
                     }
                     return "Data loaded successfully.";
@@ -87,6 +93,7 @@ public class ClientController {
                         passport.setPetId(pet.getId());
                         passport.setClientId(loggedClient.getId());
                         passportService.addPassport(passport);
+                        String.format("Passport with ID= '%s' for Pet with name '%s' was added successful.%n", passport.getId(), pet.getName());
                     } catch (NonexistingEntityException e) {
                         e.printStackTrace();
                     }
@@ -119,6 +126,26 @@ public class ClientController {
                         return "You don't have any appointments";
                     }
                     return "Total appointments count: " + appointments.size();
+                }),
+                new Menu.Option("Delete my Appointment", () -> {
+                    System.out.println("Appointments");
+                    List<Appointment> appointments = appointmentService.findAll().stream()
+                            .filter(a -> a.getClientId().equals(loggedClient.getId()))
+                            .collect(Collectors.toList());
+                    if (appointments.size() > 0) {
+                        appointments.forEach(System.out::println);
+                    } else {
+                        return "You don't have any appointments";
+                    }
+                    System.out.println("Please chose appointment by ID to be deleted:");
+                    long id = Long.parseLong(scanner.nextLine());
+                    Appointment deletedAppointment = null;
+                    try {
+                        deletedAppointment = appointmentService.deleteAppointmentById(id);
+                        return String.format("You successful delete appointment with ID= %s", deletedAppointment.getId());
+                    } catch (NonexistingEntityException e) {
+                        return "Appointment with ID= " + id + "does not exist.";
+                    }
                 }),
                 new Menu.Option("View my pet passport", () -> {
                     PetPassport passport = loggedClient.getPet().getPetPassport();

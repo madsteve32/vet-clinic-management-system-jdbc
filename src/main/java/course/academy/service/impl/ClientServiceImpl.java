@@ -109,23 +109,6 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client updateClientByAdmin(Client client) throws NonexistingEntityException, EntityPersistenceException, InvalidEntityDataException {
-        int firstNameLength = client.getFirstName().length();
-        if (firstNameLength < 2 || firstNameLength > 15) {
-            throw new InvalidEntityDataException("First name must be between 2 and 15 characters.");
-        }
-        int lastNameLength = client.getLastName().length();
-        if (lastNameLength < 2 || lastNameLength > 15) {
-            throw new InvalidEntityDataException("Last name must be between 2 and 15 characters.");
-        }
-        int usernameLength = client.getUsername().length();
-        if (usernameLength < 2 || usernameLength > 15) {
-            throw new InvalidEntityDataException("Username must be between 2 and 15 characters.");
-        }
-        return clientRepository.updateByAdmin(client);
-    }
-
-    @Override
     public Client deleteClientById(Long id) throws NonexistingEntityException {
         Client deletedClient = clientRepository.deleteById(id);
         clientRepository.save();

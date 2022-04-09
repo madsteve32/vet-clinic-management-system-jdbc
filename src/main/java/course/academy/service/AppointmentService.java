@@ -13,7 +13,7 @@ public interface AppointmentService {
     void loadData();
     void saveData();
     Collection<Appointment> findAll() throws EntityPersistenceException;
-    List<Appointment> findAllSorted(Comparator<Appointment> comparator);
+    List<Appointment> findAllSorted(Comparator<Appointment> comparator) throws EntityPersistenceException;
     Appointment getAppointmentById(Long id) throws NonexistingEntityException;
     Appointment addAppointment(Appointment appointment) throws InvalidEntityDataException, EntityPersistenceException;
     Appointment updateAppointment(Appointment appointment) throws InvalidEntityDataException, NonexistingEntityException, EntityPersistenceException;

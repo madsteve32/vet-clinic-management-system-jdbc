@@ -21,7 +21,7 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
     public static final String INSERT_NEW_ADMIN =
             "INSERT INTO `vet_clinic_management_system`.`administrators` (`first_name`, `last_name`, `email`, `tel_number`, `username`, `password`, `gender`, `role`) values (?, ?, ?, ?, ?, ?, ?, ?) ;";
     public static final String UPDATE_ADMIN =
-            "UPDATE `vet_clinic_management_system`.`administrators` SET `first_name` = ?, `last_name` = ?, `tel_number` = ?, `username` = ? WHERE (`id` = ?);";
+            "UPDATE `vet_clinic_management_system`.`administrators` SET `first_name` = ?, `last_name` = ?, `email` = ?, `tel_number` = ?, `username` = ?, `password` = ? WHERE (`id` = ?);";
     public static final String DELETE_ADMIN = "DELETE from `administrators` WHERE (`id` = ?);";
 
     private Connection connection;
@@ -108,9 +108,11 @@ public class AdminRepositoryJdbc implements AdministratorRepository {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN)) {
             statement.setString(1, admin.getFirstName());
             statement.setString(2, admin.getLastName());
-            statement.setString(3, admin.getTelNumber());
-            statement.setString(4, admin.getUsername());
-            statement.setLong(5, admin.getId());
+            statement.setString(3, admin.getEmail());
+            statement.setString(4, admin.getTelNumber());
+            statement.setString(5, admin.getUsername());
+            statement.setString(6, admin.getPassword());
+            statement.setLong(7, admin.getId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {

@@ -1,0 +1,14 @@
+When you start the program for first time you need to uncomment adding Admin from Main class.
+To login in admin menu you need to use this information:
+username: admin
+password: Admin_123
+
+Admin can add and update all users in DB.
+Admin can complete and delete all appointments from DB.
+
+After Admin add Client user the first thing you need to do when you login in client user is:
+1. Add pet .
+2. Add Pet passport after adding Pet.
+
+Doctor user can complete Appointments also if some Appointment have status control_examination doctor can add
+examination for this appointment.

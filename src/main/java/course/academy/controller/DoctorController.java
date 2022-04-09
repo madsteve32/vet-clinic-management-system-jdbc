@@ -72,13 +72,15 @@ public class DoctorController {
                     return "You successfully update your information.";
                 }),
                 new Menu.Option("View my appointments", () -> {
-                    List<Appointment> appointments = loggedDoctor.getAppointments();
+                    List<Appointment> appointments = appointmentService.findAll().stream()
+                            .filter(a -> a.getChosenDoctorId().equals(loggedDoctor.getId()))
+                            .collect(Collectors.toList());
                     if (appointments.size() > 0) {
                         appointments.forEach(System.out::println);
                     } else {
-                        return "You don't have any appointments.";
+                        return "You don't have any appointments";
                     }
-                    return "This is your appointments.";
+                    return "Total appointments count: " + appointments.size();
                 }),
                 new Menu.Option("Complete Appointment", () -> {
                     System.out.println("Appointments:");
@@ -131,6 +133,26 @@ public class DoctorController {
                         System.out.println(e.getMessage());
                     }
                     return "Appointment complete successfully.";
+                }),
+                new Menu.Option("Delete my Appointment", () -> {
+                    System.out.println("Appointments");
+                    List<Appointment> appointments = appointmentService.findAll().stream()
+                            .filter(a -> a.getChosenDoctorId().equals(loggedDoctor.getId()))
+                            .collect(Collectors.toList());
+                    if (appointments.size() > 0) {
+                        appointments.forEach(System.out::println);
+                    } else {
+                        return "You don't have any appointments";
+                    }
+                    System.out.println("Please chose appointment by ID to be deleted:");
+                    long id = Long.parseLong(scanner.nextLine());
+                    Appointment deletedAppointment = null;
+                    try {
+                        deletedAppointment = appointmentService.deleteAppointmentById(id);
+                        return String.format("You successful delete appointment with ID= %s", deletedAppointment.getId());
+                    } catch (NonexistingEntityException e) {
+                        return "Appointment with ID= " + id + "does not exist.";
+                    }
                 })
         ));
         try {

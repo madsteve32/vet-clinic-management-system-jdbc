@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class AppointmentRepositoryJdbc implements AppointmentRepository {
@@ -34,11 +35,6 @@ public class AppointmentRepositoryJdbc implements AppointmentRepository {
     }
 
     @Override
-    public List<Appointment> findAllSorted(Comparator<Appointment> comparator) {
-        return null;
-    }
-
-    @Override
     public Collection<Appointment> findAll() throws EntityPersistenceException {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_APPOINTMENTS)) {
             ResultSet rs = statement.executeQuery();
@@ -47,6 +43,13 @@ public class AppointmentRepositoryJdbc implements AppointmentRepository {
             log.error("Error creating connection to DB", ex);
             throw new EntityPersistenceException("Error executing SQL query: " + SELECT_ALL_APPOINTMENTS, ex);
         }
+    }
+
+    @Override
+    public List<Appointment> findAllSorted(Comparator<Appointment> comparator) throws EntityPersistenceException {
+        List<Appointment> appointments = new ArrayList<>(findAll());
+        appointments.sort(comparator);
+        return appointments;
     }
 
     @Override
