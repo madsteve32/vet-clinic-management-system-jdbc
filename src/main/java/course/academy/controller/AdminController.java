@@ -20,8 +20,10 @@ import course.academy.view.updateUserDialogs.UpdateClientDialog;
 import course.academy.view.updateUserDialogs.UpdateDoctorDialog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import static course.academy.entities.enums.Status.COMPLETED;
 
@@ -200,7 +202,12 @@ public class AdminController {
                 }),
                 new Menu.Option("Delete Appointment", () -> {
                     System.out.println("Appointments");
-                    appointmentService.findAll().forEach(System.out::println);
+                    Collection<Appointment> appointments = appointmentService.findAll();
+                    if (appointments.size() > 0) {
+                        appointments.forEach(System.out::println);
+                    } else {
+                        return "You don't have any appointments";
+                    }
                     System.out.println("Please chose appointment by ID to be deleted:");
                     long id = Long.parseLong(scanner.nextLine());
                     Appointment deletedAppointment = null;
