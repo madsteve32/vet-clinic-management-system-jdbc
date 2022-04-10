@@ -48,7 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Appointment addAppointment(Appointment appointment) throws InvalidEntityDataException, EntityPersistenceException {
         Collection<Appointment> appointments = appointmentRepository.findAll();
         int hour = appointment.getChosenDateTime().getHour();
-        if (hour <= 8 || hour > 18) {
+        if (hour < 8 || hour > 18) {
             throw new InvalidEntityDataException("Doctor working time is from (08:00 to 18:00) please choose another time.");
         }
         if (appointment.getChosenDateTime().isBefore(LocalDateTime.now())) {

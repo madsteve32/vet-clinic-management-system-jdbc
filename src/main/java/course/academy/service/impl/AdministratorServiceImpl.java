@@ -22,16 +22,6 @@ public class AdministratorServiceImpl implements AdministratorService {
 
 
     @Override
-    public void loadData() {
-        adminRepository.load();
-    }
-
-    @Override
-    public void saveData() {
-        adminRepository.save();
-    }
-
-    @Override
     public Collection<Administrator> findAll() throws EntityPersistenceException {
         return adminRepository.findAll();
     }
@@ -88,5 +78,15 @@ public class AdministratorServiceImpl implements AdministratorService {
     @Override
     public long count() {
         return adminRepository.count();
+    }
+
+    @Override
+    public void loadData() {
+        adminRepository.load();
+    }
+
+    @Override
+    public void saveData() {
+        adminRepository.save();
     }
 }

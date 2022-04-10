@@ -30,8 +30,11 @@ public class NewAppointmentDialog implements EntityDialog<Appointment> {
             String strDate = scanner.nextLine();
             LocalDateTime dateTime = LocalDateTime.parse(strDate,
                     DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+            int hour = appointment.getChosenDateTime().getHour();
             if (dateTime.isBefore(LocalDateTime.now())) {
                 System.out.println("Error: Chosen date and time cannot be in the past.");
+            } else if (hour < 8 || hour > 18) {
+                System.out.println("Error: Please choose another hour Doctor working time is from (08:00 to 18:00).");
             } else {
                 appointment.setChosenDateTime(dateTime);
             }
